@@ -1,0 +1,2 @@
+# Go web service template
+
