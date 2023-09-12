@@ -1,11 +1,13 @@
 name: Pre-commit auto-update
+
 on:
   workflow_dispatch:
   schedule:
     - cron: '30 0 * * *'
+
 jobs:
-  auto-update:
-    runs-on: ubuntu-22.04
+  pre-commit-auto-update:
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - name: Set up Python
