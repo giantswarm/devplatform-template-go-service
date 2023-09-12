@@ -65,5 +65,8 @@ func main() {
 	setupPrometheusExporter()
 	router.GET("/metrics", gin.WrapH(promhttp.Handler()))
 	// Listen and Server on the LocalHost:Port
-	router.Run(":" + listeningPort)
+	err := router.Run(":" + listeningPort)
+	if err != nil {
+		log.Panicf("Critical error: %s", err)
+	}
 }
