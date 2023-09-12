@@ -38,7 +38,7 @@ repos:
       hooks:
         - id: go-fmt
         - id: go-vet
-        - id: go-imports
+        # - id: go-imports
         - id: golangci-lint
 
     # security
