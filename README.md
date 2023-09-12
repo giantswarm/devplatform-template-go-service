@@ -13,10 +13,10 @@ Install git checks:
 
 If you want to build locally the same way as CI/CD:
 
-- docker
-- goreleaser
-- syft
-- cosign
+- [docker](https://www.docker.com/products/docker-desktop/)
+- [goreleaser](https://goreleaser.com/)
+- [syft](https://github.com/anchore/syft)
+- [cosign](https://github.com/sigstore/cosign)
 
 Configure (first time only):
 
