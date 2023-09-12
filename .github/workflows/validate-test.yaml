@@ -17,9 +17,7 @@ jobs:
     - name: Install pre-commit
       run: pip install -U pre-commit
     - name: Install golangci
-      uses: jaxxstorm/action-install-gh-release@v1.10.0
-      with:
-        repo: golangci/golangci-lint
+      run: curl -sSfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sh -s v1.54.2
     - name: Restore pre-commit cache
       uses: actions/cache@v3.3.2
       with:
