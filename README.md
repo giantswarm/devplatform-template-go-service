@@ -1,5 +1,7 @@
 # Go web service template
 
+![validation and test result](https://github.com/giantswarm/devplatform-template-go-service/actions/workflows/validate-test.yaml/badge.svg?event=push)
+
 ## DRAFT
 
 ## Setting up local development environment
