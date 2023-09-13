@@ -1,4 +1,4 @@
-name: release
+name: Release project
 
 on:
   push:
@@ -9,7 +9,10 @@ permissions:
   contents: read
 
 jobs:
+  validate-and-test:
+    uses: './.github/workflows/validate-test.yaml'
   release:
+    needs: [validate-and-test]
     runs-on: ubuntu-latest
     permissions:
       contents: write # needed to write releases
