@@ -16,6 +16,8 @@ repos:
       rev: v0.36.0
       hooks:
           - id: markdownlint
+            # This file is auto-generated.
+            exclude: helm/README.md
 
     # general file formatting
     - repo: https://github.com/pre-commit/pre-commit-hooks
@@ -31,6 +33,8 @@ repos:
             # helm templates are not correct YAML files, but have .yaml extension
             exclude: helm/templates/.*
           - id: end-of-file-fixer
+            # This file is auto-generated.
+            exclude: helm/README.md
           - id: pretty-format-json
             args: ['--indent', '2', '--autofix']
           - id: trailing-whitespace
@@ -55,3 +59,11 @@ repos:
       rev: v2.12.1-beta
       hooks:
         - id: hadolint-docker
+
+    # generate helm-docs
+    - repo: https://github.com/norwoodj/helm-docs
+      rev: v1.2.0
+      hooks:
+        - id: helm-docs
+          args:
+            - --chart-search-root=helm/

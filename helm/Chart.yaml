@@ -1,6 +1,6 @@
 apiVersion: v2
 name: devplatform-template-go-service
-description: A Helm chart for Kubernetes
+description: A Helm chart to deploy the sample golang based web service project.
 type: application
 kubeVersion: ">=1.21.0"
 home: https://github.com/giantswarm/devplatform-template-go-service/
