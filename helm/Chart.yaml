@@ -2,6 +2,7 @@ apiVersion: v2
 name: devplatform-template-go-service
 description: A Helm chart for Kubernetes
 type: application
+kubeVersion: ">=1.21.0"
 home: https://github.com/giantswarm/devplatform-template-go-service/
 maintainers:
   - name: honey badger team at Giant Swarm

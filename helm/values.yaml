@@ -36,6 +36,7 @@ autoscaling:
   maxReplicas: 10
   targetCPUUtilizationPercentage: 80
   targetMemoryUtilizationPercentage: 80
+enablePdb: true
 nodeSelector: {}
 
 service:
