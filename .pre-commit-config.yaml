@@ -27,6 +27,7 @@ repos:
           - id: check-symlinks
           - id: check-xml
           - id: check-yaml
+            # helm templates are not correct YAML files, but have .yaml extension
             exclude: helm/template/*
           - id: end-of-file-fixer
           - id: pretty-format-json
