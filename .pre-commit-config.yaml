@@ -23,6 +23,7 @@ repos:
       hooks:
           - id: check-added-large-files
           - id: check-executables-have-shebangs
+          - id: check-json
           - id: check-merge-conflict
           - id: check-symlinks
           - id: check-xml
@@ -31,6 +32,7 @@ repos:
             exclude: helm/template/*
           - id: end-of-file-fixer
           - id: pretty-format-json
+            args: ['--indent', '2', '--autofix']
           - id: trailing-whitespace
           - id: mixed-line-ending
 
