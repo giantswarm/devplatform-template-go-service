@@ -29,7 +29,7 @@ repos:
           - id: check-xml
           - id: check-yaml
             # helm templates are not correct YAML files, but have .yaml extension
-            exclude: helm/template/*
+            exclude: helm/templates/.*
           - id: end-of-file-fixer
           - id: pretty-format-json
             args: ['--indent', '2', '--autofix']
