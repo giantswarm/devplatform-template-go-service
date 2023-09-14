@@ -27,6 +27,7 @@ repos:
           - id: check-symlinks
           - id: check-xml
           - id: check-yaml
+            exclude: helm/template/*
           - id: end-of-file-fixer
           - id: pretty-format-json
           - id: trailing-whitespace
