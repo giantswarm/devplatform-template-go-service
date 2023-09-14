@@ -42,7 +42,7 @@ service:
   type: ClusterIP
   port: 80
   annotations: {}
-  # kubectl annotate service nginx "external-dns.alpha.kubernetes.io/hostname=nginx.example.org."
+    # external-dns.alpha.kubernetes.io/hostname: "mydomain.com"
 
 ingress:
   enabled: false
