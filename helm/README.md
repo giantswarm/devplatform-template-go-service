@@ -12,7 +12,7 @@ Kubernetes: `>=1.21.0`
 
 ## Values
 
-Use the values below to configure the chart.
+Use the values below to configure the chart's values.
 | Key | Type | Default | Description |
 |-----|------|---------|-------------|
 | autoscaling.enabled | bool | `true` | Turn on Pod replicas number autoscaling instead of setting a constant value. your cluster must support [ Horizontal Pod Autoscaling ](https://kubernetes.io/docs/tasks/run-application/horizontal-pod-autoscale/). |
