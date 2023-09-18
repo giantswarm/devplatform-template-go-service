@@ -15,12 +15,7 @@ jobs:
       with:
         python-version: 3.11
     - name: Install golangci
-      uses: jaxxstorm/action-install-gh-release@v1.10.0
-      with:
-        repo: golangci/golangci-lint
-        tag: v1.54.2
-        cache: enable
-      # run: curl -sSfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sh -s -- -b "$HOME/.local/bin" v1.54.2
+      run: curl -sSfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sh -s -- -b "$HOME/.local/bin" v1.54.2
     - name: Install helm-docs
       uses: jaxxstorm/action-install-gh-release@v1.10.0
       with:
