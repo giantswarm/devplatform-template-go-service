@@ -51,6 +51,8 @@ jobs:
           registry: ghcr.io
           username: build_bot
           password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Login helm to OCI regostry
+        run: helm registry login ghcr.io -u build_bot -p "${{ secrets.GITHUB_TOKEN }}"
       - name: Run GoReleaser
         uses: goreleaser/goreleaser-action@f82d6c1c344bcacabba2c841718984797f664a6b # v4.2.0
         with:
@@ -59,9 +61,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Install and run app-build-suite to build the helm chart
-        run: curl -fsSL https://github.com/giantswarm/app-build-suite/releases/download/v1.1.5/dabs.sh -o /tmp/dabs.sh && chmod +x /tmp/dabs.sh && /tmp/dabs.sh -c helm | tee /tmp/abs.log
-      - name: Login helm to OCI regostry
-        run: helm registry login -u build_bot -p "${{ secrets.GITHUB_TOKEN }}"
+        run: curl -fsSL https://github.com/giantswarm/app-build-suite/releases/download/v1.1.5/dabs.sh -o /tmp/dabs.sh && chmod +x /tmp/dabs.sh && /tmp/dabs.sh -c helm 2>&1 | tee /tmp/abs.log
       - name: Capture the helm chart name
         id: helm-chart-name
         run: >-
