@@ -24,10 +24,6 @@ jobs:
         cache: enable
     - name: Run pre-commit
       uses: pre-commit/action@v3.0.0
-    - name: Commit & Push potiential changes created by pre-commit
-      uses: actions-js/push@v1.4
-      with:
-        github_token: ${{ secrets.GITHUB_TOKEN }}
   test:
     runs-on: ubuntu-latest
     needs: validate

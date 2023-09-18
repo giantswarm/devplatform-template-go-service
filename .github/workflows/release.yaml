@@ -11,7 +11,7 @@ permissions:
 jobs:
   validate-and-test:
     uses: './.github/workflows/validate-test.yaml'
-  release:
+  release-binary-and-image:
     needs: [validate-and-test]
     runs-on: ubuntu-latest
     permissions:
@@ -52,3 +52,9 @@ jobs:
           args: release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Install and run app-build-suite to build the helm chart
+        run: curl -fsSL https://github.com/giantswarm/app-build-suite/releases/download/v1.1.5/dabs.sh -o /tmp/dabs.sh && chmod +x /tmp/dabs.sh && /tmp/dabs.sh -c helm
+      - name: Push the helm chart to registry
+        run: helm push TODO_FIGURE_IT_OUT
+      - name: Sign the helm chart with cosign
+        run: cosign sign TODO_FIGURE_IT_OUT
