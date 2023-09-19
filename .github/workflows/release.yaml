@@ -61,7 +61,7 @@ jobs:
         run: curl -fsSL https://github.com/giantswarm/app-build-suite/releases/download/v1.1.5/dabs.sh -o /tmp/dabs.sh && chmod +x /tmp/dabs.sh
       - name: Run app-build-suite to build the helm chart
         id: dabs
-        run: echo "/tmp/dabs.sh -c helm 2>&1"
+        run: /tmp/dabs.sh -c helm 2>&1
       - name: Capture the helm chart name
         run: >-
           echo "CHART_FILE=$(
