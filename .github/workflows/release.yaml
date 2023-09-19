@@ -60,21 +60,21 @@ jobs:
           args: release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      - name: Install and run app-build-suite to build the helm chart
-        run: curl -fsSL https://github.com/giantswarm/app-build-suite/releases/download/v1.1.5/dabs.sh -o /tmp/dabs.sh && chmod +x /tmp/dabs.sh && /tmp/dabs.sh -c helm 2>&1 | tee /tmp/abs.log
+      - name: Install app-build-suite
+        run: curl -fsSL https://github.com/giantswarm/app-build-suite/releases/download/v1.1.5/dabs.sh -o /tmp/dabs.sh && chmod +x /tmp/dabs.sh
+      - name: Run app-build-suite to build the helm chart
+        run: echo "dabs_out=$(/tmp/dabs.sh -c helm 2>&1)" >> "$GITHUB_OUTPUT"
       - name: Capture the helm chart name
-        id: helm-chart-name
         run: >-
-          echo "::set-output name=CHART_FILE::$(
+          echo "CHART_FILE=$(
             awk -F":" '/packaged chart and saved it to/ {gsub(/ /, ""); print $2}' /tmp/abs.log
-          )"
+          )" >> "$GITHUB_ENV"
       - name: Capture the helm chart version
-        id: helm-chart-version
         run: >-
-          echo "::set-output name=CHART_VERSION::$(
+          echo "CHART_VERSION=$(
             awk -F"[:,]" '/=> \(version/ {gsub(/[ "]/, ""); print $2; exit }' /tmp/abs.log
-          )"
+          )" >> "$GITHUB_ENV"
       - name: Push the helm chart to registry
-        run: helm push "ghcr.io/giantswarm/devplatform-template-go-service:${{ steps.helm-chart-name.outputs.CHART_FILE }}" "${{ steps.helm-chart-version.outputs.CHART_VERSION }}"
+        run: helm push "oci://ghcr.io/giantswarm/devplatform-template-go-service:${CHART_VERSION}" "${CHART_FILE}"
       - name: Sign the helmghcr.io/giantswarm/devplatform-template
-        run: cosign sign "ghcr.io/giantswarm/devplatform-template-go-service:${{ steps.helm-chart-name.outputs.CHART_FILE }}"
+        run: cosign sign "ghcr.io/giantswarm/devplatform-template-go-service:${CHART_FILE}"
