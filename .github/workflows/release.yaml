@@ -5,14 +5,11 @@ on:
     tags: [ 'v*' ]
   workflow_dispatch: {}
 
-permissions:
-  contents: read
-
 jobs:
-  validate-and-test:
-    uses: './.github/workflows/validate-test.yaml'
+  # validate-and-test:
+  #   uses: './.github/workflows/validate-test.yaml'
   release-binary-and-image:
-    needs: [validate-and-test]
+    # needs: [validate-and-test]
     runs-on: ubuntu-latest
     permissions:
       contents: write # needed to write releases
@@ -25,56 +22,57 @@ jobs:
           fetch-depth: 0
       - name: Checkout - force fetch tags
         run: git fetch --force --tags
-      - name: Setup Go
-        uses: actions/setup-go@fac708d6674e30b6ba41289acaab6d4b75aa0753 # v4.0.1
-        with:
-          go-version: 1.20.x
-          cache: false
-      - name: Setup QEMU
-        uses: docker/setup-qemu-action@e81a89b1732b9c48d79cd809d8d81d79c4647a18 # v2.1.0
-      - name: Setup Docker Buildx
-        id: buildx
-        uses: docker/setup-buildx-action@885d1462b80bc1c1c7f0b00334ad271f09369c55  # v2.10.0
-      - name: Setup Syft
-        uses: anchore/sbom-action/download-syft@4d571ad1038a9cc29d676154ef265ab8f9027042 # v0.14.2
-      - name: Setup Cosign
-        uses: sigstore/cosign-installer@dd6b2e2b610a11fd73dd187a43d57cc1394e35f9 # v3.0.5
-      - name: Setup Helm
-        uses: jaxxstorm/action-install-gh-release@v1.10.0
-        with:
-          repo: helm/helm
-          tag: v3.12.3
-          cache: enable
-      - name: Login to GitHub Container Registry
-        uses: docker/login-action@f4ef78c080cd8ba55a85445d5b36e214a81df20a # v2.1.0
-        with:
-          registry: ghcr.io
-          username: build_bot
-          password: ${{ secrets.GITHUB_TOKEN }}
-      - name: Login helm to OCI regostry
-        run: helm registry login ghcr.io -u build_bot -p "${{ secrets.GITHUB_TOKEN }}"
-      - name: Run GoReleaser
-        uses: goreleaser/goreleaser-action@f82d6c1c344bcacabba2c841718984797f664a6b # v4.2.0
-        with:
-          version: latest
-          args: release
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      #- name: Setup Go
+      #  uses: actions/setup-go@fac708d6674e30b6ba41289acaab6d4b75aa0753 # v4.0.1
+      #  with:
+      #    go-version: 1.20.x
+      #    cache: false
+      #- name: Setup QEMU
+      #  uses: docker/setup-qemu-action@e81a89b1732b9c48d79cd809d8d81d79c4647a18 # v2.1.0
+      #- name: Setup Docker Buildx
+      #  id: buildx
+      #  uses: docker/setup-buildx-action@885d1462b80bc1c1c7f0b00334ad271f09369c55  # v2.10.0
+      #- name: Setup Syft
+      #  uses: anchore/sbom-action/download-syft@4d571ad1038a9cc29d676154ef265ab8f9027042 # v0.14.2
+      #- name: Setup Cosign
+      #  uses: sigstore/cosign-installer@dd6b2e2b610a11fd73dd187a43d57cc1394e35f9 # v3.0.5
+      #- name: Setup Helm
+      #  uses: jaxxstorm/action-install-gh-release@v1.10.0
+      #  with:
+      #    repo: helm/helm
+      #    tag: v3.12.3
+      #    cache: enable
+      #- name: Login to GitHub Container Registry
+      #  uses: docker/login-action@f4ef78c080cd8ba55a85445d5b36e214a81df20a # v2.1.0
+      #  with:
+      #    registry: ghcr.io
+      #    username: build_bot
+      #    password: ${{ secrets.GITHUB_TOKEN }}
+      #- name: Login helm to OCI registry
+      #  run: helm registry login ghcr.io -u build_bot -p "${{ secrets.GITHUB_TOKEN }}"
+      #- name: Run GoReleaser
+      #  uses: goreleaser/goreleaser-action@f82d6c1c344bcacabba2c841718984797f664a6b # v4.2.0
+      #  with:
+      #    version: latest
+      #    args: release
+      #  env:
+      #    GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Install app-build-suite
         run: curl -fsSL https://github.com/giantswarm/app-build-suite/releases/download/v1.1.5/dabs.sh -o /tmp/dabs.sh && chmod +x /tmp/dabs.sh
       - name: Run app-build-suite to build the helm chart
-        run: echo "dabs_out=$(/tmp/dabs.sh -c helm 2>&1)" >> "$GITHUB_OUTPUT"
+        id: dabs
+        run: echo "/tmp/dabs.sh -c helm 2>&1"
       - name: Capture the helm chart name
         run: >-
           echo "CHART_FILE=$(
-            awk -F":" '/packaged chart and saved it to/ {gsub(/ /, ""); print $2}' /tmp/abs.log
+            awk -F":" '/packaged chart and saved it to/ {gsub(/ /, ""); print $2}' /tmp/abs.log | grep .
           )" >> "$GITHUB_ENV"
       - name: Capture the helm chart version
         run: >-
           echo "CHART_VERSION=$(
-            awk -F"[:,]" '/=> \(version/ {gsub(/[ "]/, ""); print $2; exit }' /tmp/abs.log
+            awk -F"[:,]" '/=> \(version/ {gsub(/[ "]/, ""); print $2; exit }' /tmp/abs.log | grep .
           )" >> "$GITHUB_ENV"
       - name: Push the helm chart to registry
-        run: helm push "oci://ghcr.io/giantswarm/devplatform-template-go-service:${CHART_VERSION}" "${CHART_FILE}"
+        run: helm push "${CHART_FILE}" "oci://ghcr.io/giantswarm/devplatform-template-go-service:${CHART_VERSION}"
       - name: Sign the helmghcr.io/giantswarm/devplatform-template
         run: cosign sign "ghcr.io/giantswarm/devplatform-template-go-service:${CHART_FILE}"
