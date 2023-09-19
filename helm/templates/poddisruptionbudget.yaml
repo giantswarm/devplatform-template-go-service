@@ -1,0 +1,14 @@
+{{- if .Values.enablePdb -}}
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+metadata:
+  name: {{ include "devplatform-template-go-service.fullname" . }}
+  labels:
+    {{- include "devplatform-template-go-service.labels" . | nindent 4 }}
+spec:
+  minAvailable: 2
+  selector:
+    matchLabels:
+      {{- include "devplatform-template-go-service.selectorLabels" . | nindent 6 }}
+{{- end }}
