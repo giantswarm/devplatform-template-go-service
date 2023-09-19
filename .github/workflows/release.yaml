@@ -48,8 +48,8 @@ jobs:
       #    registry: ghcr.io
       #    username: build_bot
       #    password: ${{ secrets.GITHUB_TOKEN }}
-      #- name: Login helm to OCI registry
-      #  run: helm registry login ghcr.io -u build_bot -p "${{ secrets.GITHUB_TOKEN }}"
+      - name: Login helm to OCI registry
+        run: helm registry login ghcr.io -u build_bot -p "${{ secrets.GITHUB_TOKEN }}"
       #- name: Run GoReleaser
       #  uses: goreleaser/goreleaser-action@f82d6c1c344bcacabba2c841718984797f664a6b # v4.2.0
       #  with:
