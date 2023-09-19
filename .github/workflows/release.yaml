@@ -73,8 +73,8 @@ jobs:
             awk -F"[:,]" '/=> \(version/ {gsub(/[ "]/, ""); print $2; exit }' /tmp/abs.log
           )" >> "$GITHUB_ENV"
       - name: Check detected version
-        run: '[ -z "${CHART_FILE}" ] && exit 1 || echo "CHART_FILE=${CHART_FILE}"'
+        run: '[ -z "${CHART_FILE}" ] && exit 1 || echo "CHART_FILE=${CHART_FILE}"; [ -z "${CHART_VERSION}" ] && exit 1 || echo "CHART_VERSION=${CHART_VERSION}"'
       - name: Push the helm chart to registry
-        run: helm push "${CHART_FILE}" "oci://ghcr.io/giantswarm/devplatform-template-go-service:${CHART_VERSION}"
+        run: helm push "${CHART_FILE}" "oci://ghcr.io/giantswarm/devplatform-template-go-service"
       - name: Sign the helmghcr.io/giantswarm/devplatform-template
-        run: cosign sign "ghcr.io/giantswarm/devplatform-template-go-service:${CHART_FILE}"
+        run: cosign sign "ghcr.io/giantswarm/devplatform-template-go-service:${CHART_VERSION}"
