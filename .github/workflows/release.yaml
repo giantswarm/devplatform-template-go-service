@@ -58,7 +58,7 @@ jobs:
       #  env:
       #    GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Install app-build-suite
-        run: curl -fsSL https://github.com/giantswarm/app-build-suite/releases/download/v1.1.5/dabs.sh -o /tmp/dabs.sh && chmod +x /tmp/dabs.sh
+        run: curl -fsSL https://github.com/giantswarm/app-build-suite/releases/download/v1.1.5/dabs.sh -o /tmp/dabs.sh && chmod +x /tmp/dabs.sh && sed -i 's/docker run -it --rm/docker run --rm/' /tmp/dabs.sh
       - name: Run app-build-suite to build the helm chart
         id: dabs
         run: /tmp/dabs.sh -c helm 2>&1
