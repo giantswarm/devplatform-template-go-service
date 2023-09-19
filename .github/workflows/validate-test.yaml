@@ -3,7 +3,9 @@ name: Validate and test code
 on:
   workflow_call: {}
   workflow_dispatch: {}
-  push: {}
+  push:
+    tags-ignore:
+      - "*"
 
 jobs:
   validate:
