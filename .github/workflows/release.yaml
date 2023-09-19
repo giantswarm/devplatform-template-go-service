@@ -42,12 +42,14 @@ jobs:
           repo: helm/helm
           tag: v3.12.3
           cache: enable
-      #- name: Login to GitHub Container Registry
-      #  uses: docker/login-action@f4ef78c080cd8ba55a85445d5b36e214a81df20a # v2.1.0
-      #  with:
-      #    registry: ghcr.io
-      #    username: build_bot
-      #    password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Setup app-build-suite
+        run: curl -fsSL https://github.com/giantswarm/app-build-suite/releases/download/v1.1.5/dabs.sh -o /tmp/dabs.sh && chmod +x /tmp/dabs.sh && sed -i 's/docker run -it --rm/docker run --rm/' /tmp/dabs.sh
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@f4ef78c080cd8ba55a85445d5b36e214a81df20a # v2.1.0
+        with:
+          registry: ghcr.io
+          username: build_bot
+          password: ${{ secrets.GITHUB_TOKEN }}
       - name: Login helm to OCI registry
         run: helm registry login ghcr.io -u build_bot -p "${{ secrets.GITHUB_TOKEN }}"
       #- name: Run GoReleaser
@@ -57,8 +59,6 @@ jobs:
       #    args: release
       #  env:
       #    GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      - name: Install app-build-suite
-        run: curl -fsSL https://github.com/giantswarm/app-build-suite/releases/download/v1.1.5/dabs.sh -o /tmp/dabs.sh && chmod +x /tmp/dabs.sh && sed -i 's/docker run -it --rm/docker run --rm/' /tmp/dabs.sh
       - name: Run app-build-suite to build the helm chart
         run: /tmp/dabs.sh -c helm 2>&1 | tee /tmp/abs.log
       - name: Capture the helm chart name
