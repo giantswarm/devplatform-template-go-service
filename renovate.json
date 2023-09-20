@@ -1,0 +1,36 @@
+{
+  "addLabels": [
+    "dependencies",
+    "renovate"
+  ],
+  "automerge": true,
+  "extends": [
+    "config:recommended"
+  ],
+  "major": {
+    "dependencyDashboardApproval": true
+  },
+  "osvVulnerabilityAlerts": true,
+  "packageRules": [
+    {
+      "addLabels": [
+        "golang"
+      ],
+      "matchCategories": [
+        "golang"
+      ]
+    },
+    {
+      "addLabels": [
+        "ci"
+      ],
+      "matchCategories": [
+        "ci"
+      ]
+    }
+  ],
+  "pinDigest": true,
+  "schedule": [
+    "after 6am on thursday"
+  ]
+}
