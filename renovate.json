@@ -3,7 +3,7 @@
     "dependencies",
     "renovate"
   ],
-  "automerge": true,
+  "automergeType": "branch",
   "dependencyDashboardOSVVulnerabilitySummary": "unresolved",
   "extends": [
     "config:recommended"
@@ -13,6 +13,15 @@
   },
   "osvVulnerabilityAlerts": true,
   "packageRules": [
+    {
+      "automerge": true,
+      "matchUpdateTypes": [
+        "minor",
+        "patch",
+        "pin",
+        "digest"
+      ]
+    },
     {
       "addLabels": [
         "golang"
