@@ -4,6 +4,7 @@
     "renovate"
   ],
   "automerge": true,
+  "dependencyDashboardOSVVulnerabilitySummary": "unresolved",
   "extends": [
     "config:recommended"
   ],
