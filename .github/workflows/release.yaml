@@ -45,7 +45,7 @@ jobs:
       - name: Setup app-build-suite
         run: curl -fsSL https://github.com/giantswarm/app-build-suite/releases/download/v1.1.5/dabs.sh -o /tmp/dabs.sh && chmod +x /tmp/dabs.sh && sed -i 's/docker run -it --rm/docker run --rm/' /tmp/dabs.sh
       - name: Login to GitHub Container Registry
-        uses: docker/login-action@f4ef78c080cd8ba55a85445d5b36e214a81df20a # v2.1.0
+        uses: docker/login-action@343f7c4344506bcbf9b4de18042ae17996df046d # v3.0.0
         with:
           registry: ghcr.io
           username: build_bot
