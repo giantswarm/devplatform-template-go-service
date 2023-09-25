@@ -39,8 +39,5 @@
       ]
     }
   ],
-  "pinDigest": true,
-  "schedule": [
-    "after 6am on thursday"
-  ]
+  "pinDigest": true
 }
