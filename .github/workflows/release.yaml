@@ -37,7 +37,7 @@ jobs:
       - name: Setup Cosign
         uses: sigstore/cosign-installer@11086d25041f77fe8fe7b9ea4e48e3b9192b8f19 # v3.1.2
       - name: Setup Helm
-        uses: jaxxstorm/action-install-gh-release@v1.10.0
+        uses: jaxxstorm/action-install-gh-release@v1.12.0
         with:
           repo: helm/helm
           tag: v3.12.3
