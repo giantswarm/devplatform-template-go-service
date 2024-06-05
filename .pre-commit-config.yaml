@@ -13,7 +13,7 @@ repos:
 
     # markdown
     - repo: https://github.com/igorshubovych/markdownlint-cli
-      rev: v0.37.0
+      rev: v0.41.0
       hooks:
           - id: markdownlint
             # This file is auto-generated.
@@ -21,7 +21,7 @@ repos:
 
     # general file formatting
     - repo: https://github.com/pre-commit/pre-commit-hooks
-      rev: v4.4.0
+      rev: v4.6.0
       hooks:
           - id: check-added-large-files
           - id: check-executables-have-shebangs
@@ -50,19 +50,19 @@ repos:
 
     # security
     - repo: https://github.com/gitleaks/gitleaks
-      rev: v8.18.0
+      rev: v8.18.3
       hooks:
         - id: gitleaks
 
     # dockerfiles
     - repo: https://github.com/hadolint/hadolint
-      rev: v2.12.1-beta
+      rev: v2.13.0-beta
       hooks:
         - id: hadolint-docker
 
     # generate helm-docs
     - repo: https://github.com/norwoodj/helm-docs
-      rev: v1.11.2
+      rev: v1.13.1
       hooks:
         - id: helm-docs
           args:
