@@ -2,12 +2,12 @@ name: Release project
 
 on:
   push:
-    tags: [ 'v*' ]
+    tags: ["v*"]
   workflow_dispatch: {}
 
 jobs:
   validate-and-test:
-    uses: './.github/workflows/validate-test.yaml'
+    uses: "./.github/workflows/validate-test.yaml"
   release-binary-and-image:
     permissions:
       contents: write # needed to write releases
@@ -47,18 +47,18 @@ jobs:
       - name: Login to GitHub Container Registry
         uses: docker/login-action@0d4c9c5ea7693da7b068278f7b52bda2a190a446 # v3.2.0
         with:
-          registry: ghcr.io
-          username: build_bot
-          password: ${{ secrets.GITHUB_TOKEN }}
+          registry: [[registry-domain]]
+          username: [[registry-username]]
+          password: [[registry-cicd-secret-ref]]
       - name: Login helm to OCI registry
-        run: helm registry login ghcr.io -u build_bot -p "${{ secrets.GITHUB_TOKEN }}"
+        run: helm registry login [[registry-domain]] -u [[registry-username]] -p "[[registry-cicd-secret-ref]]"
       - name: Run GoReleaser
         uses: goreleaser/goreleaser-action@7ec5c2b0c6cdda6e8bbb49444bc797dd33d74dd8 # v5.0.0
         with:
           version: latest
           args: release
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: [[registry-cicd-secret-ref]]
       - name: Run app-build-suite to build the helm chart
         run: /tmp/dabs.sh -c helm 2>&1 | tee /tmp/abs.log
       - name: Capture the helm chart name

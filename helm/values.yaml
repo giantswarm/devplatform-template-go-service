@@ -1,4 +1,4 @@
-# Default values for devplatform-template-go-service.
+# Default values for [[project-name]].
 
 # -- Override the default name generated for the chart objects.
 nameOverride: ""
@@ -7,9 +7,9 @@ fullnameOverride: ""
 
 image:
   # -- Set the domain of your container images registry.
-  registry: azcr.io
+  registry: "[[registry-domain]]"
   # -- Set the name of the repository within the registry.
-  repository: giantswarm-dev-platform/devplatform-template-go-service
+  repository: "[[registry-name]]/[[image-name]]"
   # -- Configure image pull policy.
   pullPolicy: IfNotPresent
 # -- Configure login secrets for the container images registry.
@@ -66,7 +66,8 @@ service:
   # -- Optional annotations for the Service definition. If your cluster has "ExternalDNS"
   # operator running, you can use "external-dns.alpha.kubernetes.io/hostname"
   # annotation to [automatically register DNS name for your service](https://github.com/kubernetes-sigs/external-dns).
-  annotations: {}
+  annotations:
+    {}
     # external-dns.alpha.kubernetes.io/hostname: "mydomain.com"
 
 ingress:
@@ -76,7 +77,8 @@ ingress:
   # -- Optional annotations for the Ingress definition. If your cluster has "CertManager"
   # operator running, you can use "cert-manager.io/cluster-issuer"
   # annotation to [automatically generate a certificate for it](https://cert-manager.io/docs/usage/).
-  annotations: {}
+  annotations:
+    {}
     # cert-manager.io/cluster-issuer: "letsencrypt-prod"
     # kubernetes.io/ingress.class: nginx
   # -- HTTP host that you want to use for your service.

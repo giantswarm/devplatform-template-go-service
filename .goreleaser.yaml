@@ -1,7 +1,7 @@
-project_name: devplatform-template-go-service
+project_name: [[image-name]]
 builds:
   - <<: &build_defaults
-      binary: devplatform-template-go-service
+      binary: [[image-name]]
       main: main.go
       ldflags:
         - -s -w
@@ -23,8 +23,8 @@ archives:
       - none*
 dockers:
   - image_templates:
-      - 'ghcr.io/giantswarm/devplatform-template-go-service:{{ .Tag }}-amd64'
-      - 'ghcr.io/giantswarm/devplatform-template-go-service:latest-amd64'
+      - "[[registry-domain]]/[[registry-name]]/[[image-name]]:{{ .Tag }}-amd64"
+      - "[[registry-domain]]/[[registry-name]]/[[image-name]]:latest-amd64"
     dockerfile: Dockerfile
     use: buildx
     goos: linux
@@ -38,8 +38,8 @@ dockers:
       - "--label=org.opencontainers.image.source={{ .GitURL }}"
       - "--platform=linux/amd64"
   - image_templates:
-      - 'ghcr.io/giantswarm/devplatform-template-go-service:{{ .Tag }}-arm64'
-      - 'ghcr.io/giantswarm/devplatform-template-go-service:latest-arm64'
+      - "[[registry-domain]]/[[registry-name]]/[[image-name]]:{{ .Tag }}-arm64"
+      - "[[registry-domain]]/[[registry-name]]/[[image-name]]:latest-arm64"
     dockerfile: Dockerfile
     use: buildx
     goos: linux
@@ -53,8 +53,8 @@ dockers:
       - "--label=org.opencontainers.image.source={{ .GitURL }}"
       - "--platform=linux/arm64"
   - image_templates:
-      - 'ghcr.io/giantswarm/devplatform-template-go-service:{{ .Tag }}-arm'
-      - 'ghcr.io/giantswarm/devplatform-template-go-service:latest-arm'
+      - "[[registry-domain]]/[[registry-name]]/[[image-name]]:{{ .Tag }}-arm"
+      - "[[registry-domain]]/[[registry-name]]/[[image-name]]:latest-arm"
     dockerfile: Dockerfile
     use: buildx
     goos: linux
@@ -68,16 +68,16 @@ dockers:
       - "--label=org.opencontainers.image.source={{ .GitURL }}"
       - "--platform=linux/arm"
 docker_manifests:
-  - name_template: 'ghcr.io/giantswarm/devplatform-template-go-service:{{ .Tag }}'
+  - name_template: "[[registry-domain]]/[[registry-name]]/[[image-name]]:{{ .Tag }}"
     image_templates:
-      - 'ghcr.io/giantswarm/devplatform-template-go-service:{{ .Tag }}-amd64'
-      - 'ghcr.io/giantswarm/devplatform-template-go-service:{{ .Tag }}-arm64'
-      - 'ghcr.io/giantswarm/devplatform-template-go-service:{{ .Tag }}-arm'
-  - name_template: 'ghcr.io/giantswarm/devplatform-template-go-service:latest'
+      - "[[registry-domain]]/[[registry-name]]/[[image-name]]:{{ .Tag }}-amd64"
+      - "[[registry-domain]]/[[registry-name]]/[[image-name]]:{{ .Tag }}-arm64"
+      - "[[registry-domain]]/[[registry-name]]/[[image-name]]:{{ .Tag }}-arm"
+  - name_template: "[[registry-domain]]/[[registry-name]]/[[image-name]]:latest"
     image_templates:
-      - 'ghcr.io/giantswarm/devplatform-template-go-service:latest-amd64'
-      - 'ghcr.io/giantswarm/devplatform-template-go-service:latest-arm64'
-      - 'ghcr.io/giantswarm/devplatform-template-go-service:latest-arm'
+      - "[[registry-domain]]/[[registry-name]]/[[image-name]]:latest-amd64"
+      - "[[registry-domain]]/[[registry-name]]/[[image-name]]:latest-arm64"
+      - "[[registry-domain]]/[[registry-name]]/[[image-name]]:latest-arm"
 docker_signs:
   - cmd: cosign
     env:
@@ -85,12 +85,12 @@ docker_signs:
     args:
       - sign
       - "--yes"
-      - '${artifact}'
+      - "${artifact}"
     artifacts: all
     output: true
 source:
   enabled: true
-  name_template: '{{ .ProjectName }}_{{ .Version }}_src'
+  name_template: "{{ .ProjectName }}_{{ .Version }}_src"
 sboms:
   - artifacts: archive
   - id: source
@@ -102,13 +102,13 @@ checksum: {}
 signs:
   - cmd: cosign
     env:
-    - COSIGN_EXPERIMENTAL=1
-    certificate: '${artifact}.pem'
+      - COSIGN_EXPERIMENTAL=1
+    certificate: "${artifact}.pem"
     args:
       - sign-blob
-      - '--output-certificate=${certificate}'
-      - '--output-signature=${signature}'
-      - '${artifact}'
+      - "--output-certificate=${certificate}"
+      - "--output-signature=${signature}"
+      - "${artifact}"
       - "--yes"
     artifacts: checksum
     output: true

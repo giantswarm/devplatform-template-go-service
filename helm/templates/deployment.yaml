@@ -1,16 +1,16 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ include "devplatform-template-go-service.fullname" . }}
+  name: {{ include "[[project-name]].fullname" . }}
   labels:
-    {{- include "devplatform-template-go-service.labels" . | nindent 4 }}
+    {{- include "[[project-name]].labels" . | nindent 4 }}
 spec:
   {{- if not .Values.autoscaling.enabled }}
   replicas: {{ .Values.replicaCount }}
   {{- end }}
   selector:
     matchLabels:
-      {{- include "devplatform-template-go-service.selectorLabels" . | nindent 6 }}
+      {{- include "[[project-name]].selectorLabels" . | nindent 6 }}
   template:
     metadata:
       {{- with .Values.podAnnotations }}
@@ -18,13 +18,13 @@ spec:
         {{- toYaml . | nindent 8 }}
       {{- end }}
       labels:
-        {{- include "devplatform-template-go-service.selectorLabels" . | nindent 8 }}
+        {{- include "[[project-name]].selectorLabels" . | nindent 8 }}
     spec:
       {{- with .Values.imagePullSecrets }}
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-      serviceAccountName: {{ include "devplatform-template-go-service.serviceAccountName" . }}
+      serviceAccountName: {{ include "[[project-name]].serviceAccountName" . }}
       securityContext:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
       containers:
@@ -71,7 +71,7 @@ spec:
                     - key: "app.kubernetes.io/name"
                       operator: In
                       values:
-                        - {{ include "devplatform-template-go-service.name" . }}
+                        - {{ include "[[project-name]].name" . }}
                     - key: "app.kubernetes.io/instance"
                       operator: In
                       values:

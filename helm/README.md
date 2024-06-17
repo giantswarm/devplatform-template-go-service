@@ -1,10 +1,10 @@
-# devplatform-template-go-service
+# [[image-name]]
 
-Chart version 0.1.0, app version 1.16.0
+Chart version 0.1.0, app version 0.1.0
 
 A Helm chart to deploy the sample golang based web service project.
 
-**Homepage:** <https://github.com/giantswarm/devplatform-template-go-service/>
+**Homepage:** <https://github.com/[[repo-owner]]/[[image-name]]/>
 
 ## Requirements
 
@@ -23,8 +23,8 @@ Use the values below to configure the chart's values.
 | enablePdb | bool | `true` | Should the chart deploy a [PodDisruptionBudget](https://kubernetes.io/docs/tasks/run-application/configure-pdb/) to limit disruptions based on administrative tasks. |
 | fullnameOverride | string | `""` | Override the default name generated for this specific chart Release. |
 | image.pullPolicy | string | `"IfNotPresent"` | Configure image pull policy. |
-| image.registry | string | `"azcr.io"` | Set the domain of your container images registry. |
-| image.repository | string | `"giantswarm-dev-platform/devplatform-template-go-service"` | Set the name of the repository within the registry. |
+| image.registry | string | `"[[registry-domain]]"` | Set the domain of your container images registry. |
+| image.repository | string | `"[[registry-name]]/[[image-name]]"` | Set the name of the repository within the registry. |
 | imagePullSecrets | list | `[]` | Configure login secrets for the container images registry. |
 | ingress.annotations | object | `{}` | Optional annotations for the Ingress definition. If your cluster has "CertManager" operator running, you can use "cert-manager.io/cluster-issuer" annotation to [automatically generate a certificate for it](https://cert-manager.io/docs/usage/). |
 | ingress.enabled | bool | `true` | Should the Service be accessible through an Ingress. This needs an Ingress controller to be configured already on your cluster. |
@@ -48,5 +48,5 @@ Use the values below to configure the chart's values.
 
 | Name | Email | Url |
 | ---- | ------ | --- |
-| honey badger team at Giant Swarm | <honeybadger@giantswarm.io> |  |
+| [[repo-owner]] | <noemail@nothing.com> |  |
 

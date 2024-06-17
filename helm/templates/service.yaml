@@ -1,9 +1,9 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ include "devplatform-template-go-service.fullname" . }}
+  name: {{ include "[[project-name]].fullname" . }}
   labels:
-    {{- include "devplatform-template-go-service.labels" . | nindent 4 }}
+    {{- include "[[project-name]].labels" . | nindent 4 }}
   {{- with .Values.service.annotations }}
   annotations:
     {{- toYaml . | nindent 4 }}
@@ -16,4 +16,4 @@ spec:
       protocol: TCP
       name: http
   selector:
-    {{- include "devplatform-template-go-service.selectorLabels" . | nindent 4 }}
+    {{- include "[[project-name]].selectorLabels" . | nindent 4 }}

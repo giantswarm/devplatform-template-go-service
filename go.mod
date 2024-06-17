@@ -1,4 +1,4 @@
-module github.com/giantswarm/devplatform-template-go-service
+module github.com/[[repo-owner]]/[[project-name]]
 
 go 1.20
 

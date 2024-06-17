@@ -1,12 +1,12 @@
 apiVersion: v2
-name: devplatform-template-go-service
+name: [[image-name]]
 description: A Helm chart to deploy the sample golang based web service project.
 type: application
 kubeVersion: ">=1.21.0"
-home: https://github.com/giantswarm/devplatform-template-go-service/
+home: https://github.com/[[repo-owner]]/[[image-name]]/
 maintainers:
-  - name: honey badger team at Giant Swarm
-    email: honeybadger@giantswarm.io
+  - name: [[repo-owner]]
+    email: noemail@nothing.com
 icon: https://s.giantswarm.io/app-icons/giantswarm/1/dark.svg
 
 # This is the chart version. This version number should be incremented each time you make changes
@@ -22,4 +22,4 @@ version: 0.1.0
 # It is recommended to use it with quotes.
 # When built with https://github.com/giantswarm/app-build-suite,
 # the appVersion might be automatically set based on git tags discovery.
-appVersion: "1.16.0"
+appVersion: "0.1.0"
