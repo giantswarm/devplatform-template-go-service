@@ -3,10 +3,13 @@ name: Pre-commit auto-update
 on:
   workflow_dispatch:
   schedule:
-    - cron: '30 0 * * *'
+    - cron: "30 0 * * *"
 
 jobs:
   pre-commit-auto-update:
+    permissions:
+      contents: write
+      pull-requests: write
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -22,7 +25,7 @@ jobs:
         uses: peter-evans/create-pull-request@v5
         with:
           branch: update/pre-commit-autoupdate
-          title: '[Bot] auto-update pre-commit hooks'
+          title: "[Bot] auto-update pre-commit hooks"
           commit-message: Auto-update pre-commit hooks
           author: Bot <bot@users.noreply.github.com>
           committer: Bot <bot@users.noreply.github.com>
