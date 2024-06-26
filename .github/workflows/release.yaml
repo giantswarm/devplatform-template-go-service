@@ -81,4 +81,4 @@ jobs:
             awk -F" " '/^Digest:/ {print $2}' /tmp/helm-push.log
           )" >> "$GITHUB_ENV"
       - name: Sign the helm chart
-        run: cosign sign "ghcr.io/[[repo-owner]]/charts/[[repo-name]]@${CHART_SHA256}"
+        run: cosign sign "ghcr.io/[[repo-owner]]/charts/[[project-name]]@${CHART_SHA256}"
