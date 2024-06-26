@@ -50,7 +50,7 @@ repos:
 
     # security
     - repo: https://github.com/gitleaks/gitleaks
-      rev: v8.18.3
+      rev: v8.18.4
       hooks:
         - id: gitleaks
 
