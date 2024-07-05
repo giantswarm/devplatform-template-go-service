@@ -1,15 +1,15 @@
 {
   "addLabels": [
     "dependencies",
-    "renovate"
+    "renovate",
   ],
   "automergeType": "branch",
   "dependencyDashboardOSVVulnerabilitySummary": "unresolved",
   "extends": [
-    "config:recommended"
+    "config:recommended",
   ],
   "major": {
-    "dependencyDashboardApproval": true
+    "dependencyDashboardApproval": true,
   },
   "osvVulnerabilityAlerts": true,
   "packageRules": [
@@ -19,25 +19,25 @@
         "minor",
         "patch",
         "pin",
-        "digest"
+        "digest",
       ]
     },
     {
       "addLabels": [
-        "golang"
+        "golang",
       ],
       "matchCategories": [
-        "golang"
+        "golang",
       ]
     },
     {
       "addLabels": [
-        "ci"
+        "ci",
       ],
       "matchCategories": [
-        "ci"
+        "ci",
       ]
     }
   ],
-  "pinDigest": true
+  "pinDigest": true,
 }
