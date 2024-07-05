@@ -1,18 +1,35 @@
 {
+  // This configuration extends the following presets. See
+  // https://docs.renovatebot.com/key-concepts/presets/ for more details.
+  "extends": [
+    "config:recommended",
+  ],
+
+  // Labels to add to all PRs
   "addLabels": [
     "dependencies",
     "renovate",
   ],
+
+  // Let Renovate update dependencies in branches, without PR,
+  // for updates which have automerge=true.
   "automergeType": "branch",
+
+  // Show CVEs that have no fixes in the dependency dashboard issue
   "dependencyDashboardOSVVulnerabilitySummary": "unresolved",
-  "extends": [
-    "config:recommended",
-  ],
+
+  // Relevant to Major version updates
   "major": {
+    // Major updates need manual approval from the dependency dashboard issue
+    // before PRs are created.
     "dependencyDashboardApproval": true,
   },
+
+  // Fix vulnerabilities known to https://osv.dev/
   "osvVulnerabilityAlerts": true,
+
   "packageRules": [
+    // Merge certain updates automatically
     {
       "automerge": true,
       "matchUpdateTypes": [
@@ -22,6 +39,7 @@
         "digest",
       ]
     },
+    // Add golang label where applicable
     {
       "addLabels": [
         "golang",
@@ -30,6 +48,7 @@
         "golang",
       ]
     },
+    // Add ci label where applicable
     {
       "addLabels": [
         "ci",
@@ -39,5 +58,6 @@
       ]
     }
   ],
-  "pinDigest": true,
+  
+  "pinDigest": true, // TODO: Check with https://docs.renovatebot.com/configuration-options/#pindigest
 }
