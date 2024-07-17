@@ -54,7 +54,8 @@ autoscaling:
   targetMemoryUtilizationPercentage: 80
 # -- Should the chart deploy a [PodDisruptionBudget](https://kubernetes.io/docs/tasks/run-application/configure-pdb/)
 # to limit disruptions based on administrative tasks.
-enablePdb: true
+pdb:
+  enabled: true
 # -- Optional node delector to limit the nodes where pods of the chart can be deployed.
 nodeSelector: {}
 
@@ -94,4 +95,5 @@ monitoring:
   # -- If your cluster supports prometheus-operator configuration of metrics data,
   # enable this to have metrics from your application automatically ingested
   # by prometheus.
-  deployServiceMonitor: true
+  serviceMonitor:
+    enabled: true
