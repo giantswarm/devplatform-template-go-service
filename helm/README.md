@@ -8,19 +8,19 @@ A Helm chart to deploy the sample golang based web service project.
 
 ## Requirements
 
-Kubernetes: `>=1.21.0`
+Kubernetes: `>=1.25.0`
 
 ## Values
 
 Use the values below to configure the chart's values.
 | Key | Type | Default | Description |
 |-----|------|---------|-------------|
-| autoscaling.enabled | bool | `true` | Turn on Pod replicas number autoscaling instead of setting a constant value. your cluster must support [ Horizontal Pod Autoscaling ](https://kubernetes.io/docs/tasks/run-application/horizontal-pod-autoscale/). |
+| autoscaling.enabled | bool | `true` | Turn on Pod replicas number autoscaling instead of setting a constant value. your cluster must support [Horizontal Pod Autoscaling](https://kubernetes.io/docs/tasks/run-application/horizontal-pod-autoscale/). |
 | autoscaling.maxReplicas | int | `10` | Max number of Pods autoscaler can deploy. |
 | autoscaling.minReplicas | int | `3` | Min number of Pods autoscaler can deploy. |
 | autoscaling.targetCPUUtilizationPercentage | int | `80` | Pod scale up critieria based on CPU usage. |
 | autoscaling.targetMemoryUtilizationPercentage | int | `80` | Pod scale up critieria based on Memory usage. |
-| enablePdb | bool | `true` | Should the chart deploy a [PodDisruptionBudget](https://kubernetes.io/docs/tasks/run-application/configure-pdb/) to limit disruptions based on administrative tasks. |
+| pdb.enabled | bool | `false` | Should the chart deploy a [PodDisruptionBudget](https://kubernetes.io/docs/tasks/run-application/configure-pdb/) to limit disruptions based on administrative tasks. |
 | fullnameOverride | string | `""` | Override the default name generated for this specific chart Release. |
 | image.pullPolicy | string | `"IfNotPresent"` | Configure image pull policy. |
 | image.registry | string | `"[[registry-domain]]"` | Set the domain of your container images registry. |
@@ -30,7 +30,7 @@ Use the values below to configure the chart's values.
 | ingress.enabled | bool | `true` | Should the Service be accessible through an Ingress. This needs an Ingress controller to be configured already on your cluster. |
 | ingress.host | string | `"chart-example.local"` | HTTP host that you want to use for your service. |
 | ingress.tls | list | `[]` | Optional TLS certificate configuration. You can use it with "CertManager" or provide your own certificate. |
-| monitoring.deployServiceMonitor | bool | `true` | If your cluster supports prometheus-operator configuration of metrics data, enable this to have metrics from your application automatically ingested by prometheus. |
+| monitoring.serviceMonitor.enabled | bool | `false` | If your cluster supports prometheus-operator configuration of metrics data, enable this to have metrics from your application automatically ingested by prometheus. |
 | nameOverride | string | `""` | Override the default name generated for the chart objects. |
 | nodeSelector | object | `{}` | Optional node delector to limit the nodes where pods of the chart can be deployed. |
 | podAnnotations | object | `{}` | Set additional annotations for the pods created. |
@@ -39,14 +39,13 @@ Use the values below to configure the chart's values.
 | resources | object | `{"limits":{"cpu":"500m","memory":"512Mi"},"requests":{"cpu":"100m","memory":"128Mi"}}` | Configure [Pod resources](https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/). |
 | service.annotations | object | `{}` | Optional annotations for the Service definition. If your cluster has "ExternalDNS" operator running, you can use "external-dns.alpha.kubernetes.io/hostname" annotation to [automatically register DNS name for your service](https://github.com/kubernetes-sigs/external-dns). |
 | service.port | int | `80` | TCP port that the service will be exposed on. |
-| service.type | string | `"ClusterIP"` | The type of [ Service ](https://kubernetes.io/docs/concepts/services-networking/service/#publishing-services-service-types). |
+| service.type | string | `"ClusterIP"` | The type of [Service](https://kubernetes.io/docs/concepts/services-networking/service/#publishing-services-service-types). |
 | serviceAccount.annotations | object | `{}` | Annotations to add to the service account. |
 | serviceAccount.create | bool | `true` | Specifies whether a service account should be created. |
 | serviceAccount.name | string | `""` | The name of the service account to use. If not set and create is true, a name is generated using the fullname template |
 
 ## Maintainers
 
-| Name | Email | Url |
-| ---- | ------ | --- |
-| [[repo-owner]] | <noemail@nothing.com> |  |
-
+| Name           | Email                 | Url |
+| -------------- | --------------------- | --- |
+| [[repo-owner]] | <noemail@nothing.com> |     |

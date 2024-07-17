@@ -21,9 +21,6 @@
       },
       "type": "object"
     },
-    "enablePdb": {
-      "type": "boolean"
-    },
     "fullnameOverride": {
       "type": "string"
     },
@@ -63,8 +60,13 @@
     },
     "monitoring": {
       "properties": {
-        "deployServiceMonitor": {
-          "type": "boolean"
+        "serviceMonitor": {
+          "properties": {
+            "enabled": {
+              "type": "boolean"
+            }
+          },
+          "type": "object"
         }
       },
       "type": "object"
@@ -73,6 +75,14 @@
       "type": "string"
     },
     "nodeSelector": {
+      "type": "object"
+    },
+    "pdb": {
+      "properties": {
+        "enabled": {
+          "type": "boolean"
+        }
+      },
       "type": "object"
     },
     "podAnnotations": {
