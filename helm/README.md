@@ -48,4 +48,4 @@ Use the values below to configure the chart's values.
 
 | Name | Email | Url |
 | ---- | ----- | --- |
-| [[repo-owner]] | <noemail@nothing.com> | |
+| [[repo-owner]] | <noemail@nothing.com> |  |
