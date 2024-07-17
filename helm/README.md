@@ -47,5 +47,6 @@ Use the values below to configure the chart's values.
 ## Maintainers
 
 | Name | Email | Url |
-| ---- | ----- | --- |
+| ---- | ------ | --- |
 | [[repo-owner]] | <noemail@nothing.com> |  |
+
