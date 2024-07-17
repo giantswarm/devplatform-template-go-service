@@ -1,4 +1,4 @@
-{{- if .Values.enablePdb -}}
+{{- if .Values.pdb.enabled | default false -}}
 apiVersion: policy/v1
 kind: PodDisruptionBudget
 metadata:

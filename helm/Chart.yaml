@@ -2,7 +2,7 @@ apiVersion: v2
 name: [[image-name]]
 description: A Helm chart to deploy the sample golang based web service project.
 type: application
-kubeVersion: ">=1.21.0"
+kubeVersion: ">=1.25.0"
 home: https://github.com/[[repo-owner]]/[[image-name]]/
 maintainers:
   - name: [[repo-owner]]
