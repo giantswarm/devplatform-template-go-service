@@ -13,4 +13,4 @@ metadata:
 spec:
   type: service
   lifecycle: experimental
-  owner: [[project-owner]]
+  owner: team-platform
