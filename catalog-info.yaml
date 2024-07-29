@@ -12,5 +12,5 @@ metadata:
     circleci.com/project-slug: github/giantswarm/[[project-name]]
 spec:
   type: service
-  lifecycle: [[project-lifecycle]]
+  lifecycle: experimental
   owner: [[project-owner]]
