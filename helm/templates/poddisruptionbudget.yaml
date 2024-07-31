@@ -2,7 +2,6 @@
 apiVersion: policy/v1
 kind: PodDisruptionBudget
 metadata:
-metadata:
   name: {{ include "[[project-name]].fullname" . }}
   labels:
     {{- include "[[project-name]].labels" . | nindent 4 }}
