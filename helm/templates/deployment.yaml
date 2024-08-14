@@ -33,6 +33,9 @@ spec:
             - name: LISTEN_PORT
               value: "{{ .Values.podListenPort | default "8080" }}"
           securityContext:
+            allowPrivilegeEscalation: false
+            seccompProfile:
+              type: "RuntimeDefault"
             capabilities:
               drop:
               - ALL
