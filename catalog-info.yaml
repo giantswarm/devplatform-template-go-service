@@ -11,5 +11,5 @@ metadata:
     github.com/project-slug: [[repo-owner]]/[[project-name]]
 spec:
   type: service
-  lifecycle: experimental
-  owner: team-platform
+  lifecycle: [[backstage-entity-lifecycle]]
+  owner: [[backstage-entity-owner]]
