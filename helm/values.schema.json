@@ -53,7 +53,7 @@
           "type": "string"
         },
         "name": {
-          "default": "app-db",
+          "default": "[[project-name]]",
           "description": "The name of the logical database to conenct to",
           "title": "name",
           "type": "string"

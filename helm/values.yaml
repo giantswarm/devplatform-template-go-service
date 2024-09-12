@@ -36,7 +36,7 @@ database:
   # -- Address to connect to the mysql database
   address: "127.0.0.1"
   # -- The name of the logical database to conenct to
-  name: "app-db"
+  name: "[[project-name]]"
   # -- Username to use for the mysql connection
   username: "user"
   # -- Password to use for the mysql connection

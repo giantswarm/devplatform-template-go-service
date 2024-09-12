@@ -21,7 +21,7 @@ Use the values below to configure the chart's values.
 | autoscaling.targetCPUUtilizationPercentage | int | `80` | Pod scale up critieria based on CPU usage. |
 | autoscaling.targetMemoryUtilizationPercentage | int | `80` | Pod scale up critieria based on Memory usage. |
 | database.address | string | `"127.0.0.1"` | Address to connect to the mysql database |
-| database.name | string | `"app-db"` | The name of the logical database to conenct to |
+| database.name | string | `"[[project-name]]"` | The name of the logical database to conenct to |
 | database.password | string | `"pass"` | Password to use for the mysql connection |
 | database.port | int | `3306` | Port to connect to the mysql database |
 | database.username | string | `"user"` | Username to use for the mysql connection |
