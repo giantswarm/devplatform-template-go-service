@@ -37,6 +37,8 @@ dockers:
       - "--label=org.opencontainers.image.version={{ .Version }}"
       - "--label=org.opencontainers.image.source={{ .GitURL }}"
       - "--platform=linux/amd64"
+    extra_files:
+      - "templates"
   - image_templates:
       - "[[registry-domain]]/[[registry-name]]/[[image-name]]:{{ .Tag }}-arm64"
       - "[[registry-domain]]/[[registry-name]]/[[image-name]]:latest-arm64"
@@ -52,6 +54,8 @@ dockers:
       - "--label=org.opencontainers.image.version={{ .Version }}"
       - "--label=org.opencontainers.image.source={{ .GitURL }}"
       - "--platform=linux/arm64"
+    extra_files:
+      - "templates"
   - image_templates:
       - "[[registry-domain]]/[[registry-name]]/[[image-name]]:{{ .Tag }}-arm"
       - "[[registry-domain]]/[[registry-name]]/[[image-name]]:latest-arm"
@@ -67,6 +71,8 @@ dockers:
       - "--label=org.opencontainers.image.version={{ .Version }}"
       - "--label=org.opencontainers.image.source={{ .GitURL }}"
       - "--platform=linux/arm"
+    extra_files:
+      - "templates"
 docker_manifests:
   - name_template: "[[registry-domain]]/[[registry-name]]/[[image-name]]:{{ .Tag }}"
     image_templates:
