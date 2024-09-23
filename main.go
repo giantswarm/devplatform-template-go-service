@@ -1,7 +1,9 @@
 package main
 
 import (
+	"crypto/tls"
 	"fmt"
+	"html/template"
 	"log"
 	"net/http"
 	"os"
@@ -9,8 +11,12 @@ import (
 	"strings"
 	"time"
 
+	"github.com/go-redis/redis/v8"
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
+
+	cache "github.com/chenyahui/gin-cache"
+	"github.com/chenyahui/gin-cache/persist"
 
 	ginzap "github.com/gin-contrib/zap"
 	"github.com/gin-gonic/gin"
@@ -18,6 +24,7 @@ import (
 
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
+	"gorm.io/gorm/schema"
 	gormprom "gorm.io/plugin/prometheus"
 )
 
@@ -30,8 +37,9 @@ const (
 
 var (
 	version = "dev"
-	commit  = "none"
+	commit  = "unknown"
 	date    = "unknown"
+	builtBy = "unknown"
 )
 
 type album struct {
@@ -110,14 +118,25 @@ func NewDbStore() (albumStore, error) {
 
 	//dsn := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?charset=utf8mb4&parseTime=True&loc=Local", username, password, dbAddress, dbPort, dbName)
 	dsn := fmt.Sprintf("host=%s user=%s password=%s dbname=%s port=%s", dbAddress, username, password, dbName, dbPort)
-	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
+	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{
+		NamingStrategy: schema.NamingStrategy{
+			TablePrefix:   "albums.",
+			SingularTable: false,
+		},
+	})
 	if err != nil {
 		return nil, err
 	}
+	sqlDB, err := db.DB()
+	if err != nil {
+		return nil, err
+	}
+	sqlDB.SetMaxIdleConns(5)
+	db.Exec("CREATE SCHEMA IF NOT EXISTS albums;")
 	if err = db.Use(gormprom.New(gormprom.Config{
-		DBName:          "postgres_albums", // `DBName` as metrics label
-		RefreshInterval: 10,                // refresh metrics interval (default 15 seconds)
-		StartServer:     false,             // start http server to expose metrics
+		DBName:          dbName, // `DBName` as metrics label
+		RefreshInterval: 10,     // refresh metrics interval (default 15 seconds)
+		StartServer:     false,  // start http server to expose metrics
 		MetricsCollector: []gormprom.MetricsCollector{
 			&gormprom.Postgres{VariableNames: []string{"Threads_running"}},
 		},
@@ -291,15 +310,25 @@ func ginPrometheusMetrics() gin.HandlerFunc {
 	}
 }
 
-//func setupRedisCache() (persistence.CacheStore, error) {
-//	redisAddr := os.Getenv("REDIS_ADDRESS")
-//	redisPassword := os.Getenv("REDIS_PASSWORD")
-//	redisPort := os.Getenv("REDIS_PORT")
-//	if redisAddr == "" || redisPort == "" {
-//		return nil, fmt.Errorf("redis address:port is not set in environment variables")
-//	}
-//	return persistence.NewRedisCache(fmt.Sprintf("%s:%s", redisAddr, redisPort), redisPassword, 10*time.Second), nil
-//}
+func setupRedisCache() (persist.CacheStore, error) {
+	redisAddr := os.Getenv("REDIS_ADDRESS")
+	redisUsername := os.Getenv("REDIS_USERNAME")
+	redisPassword := os.Getenv("REDIS_PASSWORD")
+	redisPort := os.Getenv("REDIS_PORT")
+	if redisAddr == "" || redisPort == "" {
+		return nil, fmt.Errorf("redis address:port is not set in environment variables")
+	}
+	return persist.NewRedisStore(redis.NewClient(&redis.Options{
+		Network:  "tcp",
+		Addr:     fmt.Sprintf("%s:%s", redisAddr, redisPort),
+		Username: redisUsername,
+		Password: redisPassword,
+		TLSConfig: &tls.Config{
+			MinVersion:         tls.VersionTLS12,
+			InsecureSkipVerify: true,
+		},
+	})), nil
+}
 
 func setupRouter(storeType storeType) *gin.Engine {
 	router := gin.New()
@@ -310,23 +339,28 @@ func setupRouter(storeType storeType) *gin.Engine {
 	router.Use(ginPrometheusMetrics())
 	router.GET("/metrics", gin.WrapH(promhttp.Handler()))
 
+	router.SetFuncMap(template.FuncMap{
+		"Version": func() string { return version },
+		"Commit":  func() string { return commit },
+		"Date":    func() string { return date },
+	})
 	router.LoadHTMLGlob("./templates/*")
 
 	var store albumStore
-	//var cacheStore persistence.CacheStore
+	var cacheStore persist.CacheStore
 	if storeType == storeMemory {
 		store = NewInMemoryStore()
-		//cacheStore = persistence.NewInMemoryStore(time.Second)
+		cacheStore = persist.NewMemoryStore(5 * time.Second)
 	} else {
 		dbStore, err := NewDbStore()
 		if err != nil {
 			log.Panicf("Critical error: %s", err)
 		}
 		store = dbStore
-		//cacheStore, err = setupRedisCache()
-		//if err != nil {
-		//	log.Panicf("Critical error: %s", err)
-		//}
+		cacheStore, err = setupRedisCache()
+		if err != nil {
+			log.Panicf("Critical error: %s", err)
+		}
 	}
 	albumsHandler := NewAlbumsHandler(store)
 
@@ -342,10 +376,10 @@ func setupRouter(storeType storeType) *gin.Engine {
 		c.HTML(http.StatusOK, "addalbum.html", gin.H{})
 	})
 	router.GET("/albums", albumsHandler.ListAlbums)
-	//router.GET("/cached_albums", cache.CachePage(cacheStore, 10*time.Second, albumsHandler.ListAlbums))
-	router.POST("/albums", albumsHandler.CreateAlbum)
 	router.GET("/albums/:id", albumsHandler.GetAlbum)
-	//router.GET("/albums/:id", cache.CachePage(cacheStore, 10*time.Second, albumsHandler.GetAlbum))
+	router.GET("/cached/albums", cache.CacheByRequestURI(cacheStore, 10*time.Second), albumsHandler.ListAlbums)
+	router.GET("/cached/albums/:id", cache.CacheByRequestURI(cacheStore, 10*time.Second), albumsHandler.GetAlbum)
+	router.POST("/albums", albumsHandler.CreateAlbum)
 	router.PUT("/albums/:id", albumsHandler.UpdateAlbum)
 	router.DELETE("/albums/:id", albumsHandler.DeleteAlbum)
 
@@ -353,14 +387,19 @@ func setupRouter(storeType storeType) *gin.Engine {
 }
 
 func main() {
-	log.Printf("Web service starting, version: '%s', commit: '%s', build date: '%s'", version, commit, date)
+	log.Printf("Web service starting, version: '%s', commit: '%s', build date: '%s', built by: '%s'", version, commit, date, builtBy)
 	listeningPort := os.Getenv("LISTEN_PORT")
 	if listeningPort == "" {
 		listeningPort = "8080"
 	}
+	memoryStoreMode, found := os.LookupEnv("IN_MEMORY_STORE")
 
-	// router := setupRouter(storeMemory)
-	router := setupRouter(storeDb)
+	var router *gin.Engine
+	if found && strings.ToLower(memoryStoreMode) == "true" {
+		router = setupRouter(storeMemory)
+	} else {
+		router = setupRouter(storeDb)
+	}
 	// Listen and Server on the LocalHost:Port
 	err := router.Run(":" + listeningPort)
 	if err != nil {

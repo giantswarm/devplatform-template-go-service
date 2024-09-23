@@ -5,6 +5,9 @@ metadata:
   name: {{ include "[[project-name]].fullname" . }}
   labels:
     {{- include "[[project-name]].labels" . | nindent 4 }}
+    {{- with .Values.monitoring.serviceMonitor.extraLabels }}
+      {{- toYaml . | nindent 4 }}
+    {{- end }}
 spec:
   endpoints:
   - path: /metrics
