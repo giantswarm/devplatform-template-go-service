@@ -35,21 +35,49 @@ spec:
             - name: GIN_MODE
               value: "{{ .Values.ginMode | default "debug" }}"
             - name: DB_USERNAME
-              value: "{{ .Values.database.username }}"
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.database.connectionSecretName }}
+                  key: username
             - name: DB_PASSWORD
-              value: "{{ .Values.database.password }}"
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.database.connectionSecretName }}
+                  key: password
             - name: DB_NAME
               value: "{{ .Values.database.name }}"
             - name: DB_ADDRESS
-              value: "{{ .Values.database.address }}"
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.database.connectionSecretName }}
+                  key: endpoint
             - name: DB_PORT
-              value: "{{ .Values.database.port | default "3306" }}"
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.database.connectionSecretName }}
+                  key: port
             - name: REDIS_ADDRESS
-              value: "{{ .Values.redis.address }}"
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.redisConnectionSecretName }}
+                  key: endpoint
             - name: REDIS_PASSWORD
-              value: "{{ .Values.redis.password }}"
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.redisConnectionSecretName }}
+                  key: password
+            - name: REDIS_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.redisConnectionSecretName }}
+                  key: username
             - name: REDIS_PORT
-              value: "{{ .Values.redis.port | default "6379" }}"
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.redisConnectionSecretName }}
+                  key: port
+            - name: IN_MEMORY_STORE
+              value: "{{ .Values.inMemoryStore }}"
           securityContext:
             allowPrivilegeEscalation: false
             seccompProfile:

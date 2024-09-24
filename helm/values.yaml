@@ -1,3 +1,4 @@
+# yaml-language-server: $schema=values.schema.json
 # Default values for [[project-name]].
 
 # -- Override the default name generated for the chart objects.
@@ -32,24 +33,24 @@ podAnnotations: {}
 podListenPort: 8080
 # -- Configure run mode of the gin web framework; can be 'debug' or 'production'
 ginMode: "debug"
+# -- Secret that contains database connection details. It has to be present in the
+# same namespace as the Chart is deployed to. Has to have `endpoint`, `username`
+# and `password` keys. May contain `port` key.
 database:
-  # -- Address to connect to the mysql database
-  address: "127.0.0.1"
-  # -- The name of the logical database to conenct to
+  # -- Secret that contains database connection details. It has to be present in the
+  # same namespace as the Chart is deployed to. Has to have `endpoint`, `username`
+  # and `password` keys. May contain `port` key.
+  connectionSecretName: ""
+  # -- Name of a logical database to use
   name: "[[project-name]]"
-  # -- Username to use for the mysql connection
-  username: "user"
-  # -- Password to use for the mysql connection
-  password: "pass"
-  # -- Port to connect to the mysql database
-  port: 3306
-redis:
-  # -- Address to connect to the redis database
-  address: "127.0.0.1"
-  # -- Password to use for the redis connection
-  password: "pass"
-  # -- Port to connect to the redis database
-  port: 6379
+# -- Secret that contains redis connection details. It has to be present in the
+# same namespace as the Chart is deployed to. Has to have `host`, `username`
+# and `password` keys. May contain `port` key.
+redisConnectionSecretName: ""
+
+# -- When set to "true", the app doesn't use any database at all and stores all the
+# data in memory only.
+inMemoryStore: false
 
 # -- Configure [Pod resources](https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/).
 resources:
@@ -97,24 +98,44 @@ ingress:
   # -- Should the Service be accessible through an Ingress. This needs an Ingress controller
   # to be configured already on your cluster.
   enabled: true
+  # @schema
+  # additionalProperties: true
+  # @schema
   # -- Optional annotations for the Ingress definition. If your cluster has "CertManager"
   # operator running, you can use "cert-manager.io/cluster-issuer"
   # annotation to [automatically generate a certificate for it](https://cert-manager.io/docs/usage/).
-  annotations:
-    {}
+  annotations: {}
   # -- Ingress controller implementations use this field to know whether they should be
   # serving this Ingress resource, by a transitive connection.
   className: "nginx"
-  # cert-manager.io/cluster-issuer: "letsencrypt-prod"
-  # kubernetes.io/ingress.class: nginx
+  # @schema
+  # type: string
+  # format: idn-hostname
+  # @schema
   # -- HTTP host that you want to use for your service.
   host: chart-example.local
+  # @schema
+  # type: array
+  # items:
+  #   type: object
+  #   required: ["secretName", "hosts"]
+  #   properties:
+  #     secretName:
+  #       type: string
+  #     hosts:
+  #       type: array
+  #       items:
+  #         type: string
+  #         format: idn-hostname
+  # examples:
+  #   - |
+  #     - secretName: chart-example-tls
+  #       hosts:
+  #         - chart-example.local
+  # @schema
   # -- Optional TLS certificate configuration. You can use it with "CertManager" or
   # provide your own certificate.
   tls: []
-  #  - secretName: chart-example-tls
-  #    hosts:
-  #      - chart-example.local
 
 monitoring:
   # -- If your cluster supports prometheus-operator configuration of metrics data,
@@ -122,3 +143,8 @@ monitoring:
   # by prometheus.
   serviceMonitor:
     enabled: true
+    # @schema
+    # additionalProperties: true
+    # @schema
+    # -- Optional extra labels to put on the serviceMonitor
+    extraLabels: {}
