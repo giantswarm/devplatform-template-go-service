@@ -8,7 +8,7 @@ metadata:
     backstage.io/source-location: url:https://github.com/[[repo-owner]]/[[project-name]]
     backstage.io/techdocs-ref: url:https://github.com/[[repo-owner]]/[[project-name]]/tree/main
     giantswarm.io/deployment-names: [[project-name]],[[project-name]]-app
-    giantswarm.io/grafana-dashboard: [[backstage-entity-grafana-dashboard]]
+    giantswarm.io/grafana-dashboard: "/d/cdyhcdr5hge0wa/demotech-web-application-vitals"
     github.com/project-slug: [[repo-owner]]/[[project-name]]
 spec:
   type: service
