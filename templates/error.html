@@ -5,7 +5,10 @@
 </head>
 <body>
 	<h1>Your request returned an error</h1>
-	<p>{{.Error}}</p>
+	<p><code>{{.Error}}</code></p>
+	<div><a href="/" class="btn btn-secondary" tabindex="-1" role="button">Home</a></div>
+
+	{{ template "footer" . }}
 </body>
 </body>
 </html>
