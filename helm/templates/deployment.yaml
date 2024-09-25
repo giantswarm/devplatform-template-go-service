@@ -32,6 +32,52 @@ spec:
           env:
             - name: LISTEN_PORT
               value: "{{ .Values.podListenPort | default "8080" }}"
+            - name: GIN_MODE
+              value: "{{ .Values.ginMode | default "debug" }}"
+            - name: DB_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.database.connectionSecretName }}
+                  key: username
+            - name: DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.database.connectionSecretName }}
+                  key: password
+            - name: DB_NAME
+              value: "{{ .Values.database.name }}"
+            - name: DB_ADDRESS
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.database.connectionSecretName }}
+                  key: endpoint
+            - name: DB_PORT
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.database.connectionSecretName }}
+                  key: port
+            - name: REDIS_ADDRESS
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.redisConnectionSecretName }}
+                  key: endpoint
+            - name: REDIS_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.redisConnectionSecretName }}
+                  key: password
+            - name: REDIS_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.redisConnectionSecretName }}
+                  key: username
+            - name: REDIS_PORT
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.redisConnectionSecretName }}
+                  key: port
+            - name: IN_MEMORY_STORE
+              value: "{{ .Values.inMemoryStore }}"
           securityContext:
             allowPrivilegeEscalation: false
             seccompProfile:
@@ -55,7 +101,7 @@ spec:
               port: http
           readinessProbe:
             httpGet:
-              path: /hello
+              path: /ping
               port: http
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
