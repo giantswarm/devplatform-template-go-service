@@ -48,6 +48,7 @@ jobs:
           tar xzf helm-v3.16.1-linux-amd64.tar.gz
           mv linux-amd64/helm /usr/local/bin/helm
           rm -rf helm-v3.16.1-linux-amd64.tar.gz linux-amd64
+          helm version
       - name: Setup app-build-suite
         run: curl -fsSL https://github.com/giantswarm/app-build-suite/releases/latest/download/dabs.sh -o /tmp/dabs.sh && chmod +x /tmp/dabs.sh && sed -i 's/docker run -it --rm/docker run --rm/' /tmp/dabs.sh
       - name: Login to GitHub Container Registry
