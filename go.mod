@@ -1,4 +1,4 @@
-module github.com/demotechinc/laszlo-kratix-14
+module github.com/demotechinc/[[project-name]]
 
 go 1.22.2
 
