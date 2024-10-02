@@ -13,9 +13,9 @@ builds:
       - amd64
       - arm64
 snapshot:
-  version_template: "{{ .Version }}-{{ .FullCommit }}"
+  version_template: "{{ .Env.CURRENT_TAG }}"
 archives:
-  - name_template: "{{ .Binary }}_{{ .Version }}_{{ .Os }}_{{ .Arch }}"
+  - name_template: "{{ .Binary }}_{{ .Env.CURRENT_TAG }}_{{ .Os }}_{{ .Arch }}"
     id: all
     builds: [linux, darwin]
     format: tar.gz
@@ -23,7 +23,7 @@ archives:
       - none*
 dockers:
   - image_templates:
-      - "[[registry-domain]]/[[registry-name]]/[[image-name]]:{{ .Tag }}-amd64"
+      - "[[registry-domain]]/[[registry-name]]/[[image-name]]:{{ .Env.CURRENT_TAG }}-amd64"
       - "[[registry-domain]]/[[registry-name]]/[[image-name]]:latest-amd64"
     dockerfile: Dockerfile
     use: buildx
@@ -40,7 +40,7 @@ dockers:
     extra_files:
       - "templates"
   - image_templates:
-      - "[[registry-domain]]/[[registry-name]]/[[image-name]]:{{ .Tag }}-arm64"
+      - "[[registry-domain]]/[[registry-name]]/[[image-name]]:{{ .Env.CURRENT_TAG }}-arm64"
       - "[[registry-domain]]/[[registry-name]]/[[image-name]]:latest-arm64"
     dockerfile: Dockerfile
     use: buildx
@@ -57,10 +57,10 @@ dockers:
     extra_files:
       - "templates"
 docker_manifests:
-  - name_template: "[[registry-domain]]/[[registry-name]]/[[image-name]]:{{ .Version }}"
+  - name_template: "[[registry-domain]]/[[registry-name]]/[[image-name]]:{{ .Env.CURRENT_TAG }}"
     image_templates:
-      - "[[registry-domain]]/[[registry-name]]/[[image-name]]:{{ .Tag }}-amd64"
-      - "[[registry-domain]]/[[registry-name]]/[[image-name]]:{{ .Tag }}-arm64"
+      - "[[registry-domain]]/[[registry-name]]/[[image-name]]:{{ .Env.CURRENT_TAG }}-amd64"
+      - "[[registry-domain]]/[[registry-name]]/[[image-name]]:{{ .Env.CURRENT_TAG }}-arm64"
   - name_template: "[[registry-domain]]/[[registry-name]]/[[image-name]]:latest"
     image_templates:
       - "[[registry-domain]]/[[registry-name]]/[[image-name]]:latest-amd64"
@@ -77,13 +77,13 @@ docker_signs:
     output: true
 source:
   enabled: true
-  name_template: "{{ .ProjectName }}_{{ .Version }}_src"
+  name_template: "{{ .ProjectName }}_{{ .Env.CURRENT_TAG }}_src"
 sboms:
   - artifacts: archive
   - id: source
     artifacts: source
     documents:
-      - "{{ .ProjectName }}_{{ .Version }}_sbom.spdx.json"
+      - "{{ .ProjectName }}_{{ .Env.CURRENT_TAG }}_sbom.spdx.json"
 release: {}
 checksum: {}
 signs:

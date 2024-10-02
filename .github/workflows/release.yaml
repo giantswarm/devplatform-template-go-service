@@ -24,6 +24,19 @@ jobs:
           fetch-depth: 0
       - name: Checkout - force fetch tags
         run: git fetch --force --tags
+      - name: Tagged build - generate tag
+        if: startsWith(github.ref, 'refs/tags/')
+        run: |
+          echo "CURRENT_TAG=$GITHUB_REF_NAME" >> $GITHUB_ENV
+      - name: Snapshot build - generate tag
+        if: ${{ !startsWith(github.ref, 'refs/tags/') }}
+        run: |
+          sudo apt-get install -y --no-install-recommends python3-semver
+          export NEXT_TAG=$(pysemver nextver $(git describe --abbrev=0) patch)
+          echo "CURRENT_TAG=${NEXT_TAG}-$(git describe | awk -F '-' '{print "dev."$2"."$3}')" >> $GITHUB_ENV
+      - name: Generate tag - print the tag
+        run: |
+          echo "CURRENT_TAG=$CURRENT_TAG"
       - name: Setup Go
         uses: actions/setup-go@0a12ed9d6a96ab950c8f026ed9f722fe0da7ef32 # v5.0.2
         with:
@@ -67,7 +80,7 @@ jobs:
           args: release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      - name: Run GoReleaser for snapshot build
+      - name: Snapshot build - run GoReleaser
         uses: goreleaser/goreleaser-action@5742e2a039330cbb23ebf35f046f814d4c6ff811 # v5.1.0
         if: ${{ !startsWith(github.ref, 'refs/tags/') }}
         with:
@@ -75,22 +88,26 @@ jobs:
           args: release --snapshot
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      - name: upload snapshot docker images - prepare image list
+      - name: Snapshot build - upload docker images - prepare image list
         if: ${{ !startsWith(github.ref, 'refs/tags/') }}
         run: jq -r '.[] | select(.type=="Docker Image" and (.name | contains(":latest") | not)) | .name' dist/artifacts.json | paste -sd ' ' /dev/stdin > images
-      - name: upload snapshot docker images - upload images
+      - name: Snapshot build - upload docker images - upload images
         if: ${{ !startsWith(github.ref, 'refs/tags/') }}
         run: cat images | xargs -d ' ' -I{} -n1 sh -c "docker push {}"
-      - name: upload snapshot docker images - capture version
-        if: ${{ !startsWith(github.ref, 'refs/tags/') }}
-        run: echo "SNAPSHOT_IMAGE_TAG=$(jq -r '.version' dist/metadata.json)" >> "$GITHUB_ENV"
-      - name: upload snapshot docker images - create manifests
+      - name: Snapshot build - upload docker images - create manifests
         if: ${{ !startsWith(github.ref, 'refs/tags/') }}
         run: |
-          docker manifest create ghcr.io/$(echo "$GITHUB_REPOSITORY" | awk '{print tolower($0)}'):$SNAPSHOT_IMAGE_TAG $(cat images)
-          docker manifest push ghcr.io/$(echo "$GITHUB_REPOSITORY" | awk '{print tolower($0)}'):$SNAPSHOT_IMAGE_TAG
+          docker manifest create ghcr.io/$(echo "$GITHUB_REPOSITORY" | awk '{print tolower($0)}'):$CURRENT_TAG $(cat images)
+          docker manifest push ghcr.io/$(echo "$GITHUB_REPOSITORY" | awk '{print tolower($0)}'):$CURRENT_TAG
+      - name: Snapshot build - set helm chart versions
+        if: ${{ !startsWith(github.ref, 'refs/tags/') }}
+        run: |
+          yq -i "(.version = env(CURRENT_TAG)) | (.appVersion = env(CURRENT_TAG))" helm/Chart.yaml
+          yq -i "(.replace-chart-version-with-git = false) | (.replace-app-version-with-git = false)" .abs/main.yaml
       - name: Run app-build-suite to build the helm chart
-        run: set -o pipefail && /tmp/dabs.sh -c helm 2>&1 | tee /tmp/abs.log
+        run: |
+          yq -i ".image.tag = env(CURRENT_TAG)" helm/values.yaml
+          set -o pipefail && /tmp/dabs.sh -c helm 2>&1 | tee /tmp/abs.log
       - name: Capture the helm chart name
         run: >-
           echo "CHART_FILE=$(
@@ -111,4 +128,4 @@ jobs:
             awk -F" " '/^Digest:/ {print $2}' /tmp/helm-push.log
           )" >> "$GITHUB_ENV"
       - name: Sign the helm chart
-        run: cosign sign --upload=true -y "ghcr.io/[[repo-owner]]/charts/[[project-name]]@${CHART_SHA256}"
+        run: cosign sign --upload=true -y "ghcr.io/$GITHUB_REPOSITORY_OWNER/charts/$(echo $GITHUB_REPOSITORY | awk -F "/" '{print $NF}')@${CHART_SHA256}"
