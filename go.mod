@@ -1,4 +1,4 @@
-module github.com/demotechinc/[[project-name]]
+module github.com/[[repo-owner]]/[[project-name]]
 
 go 1.22.2
 
