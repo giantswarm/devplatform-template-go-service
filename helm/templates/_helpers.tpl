@@ -1,7 +1,7 @@
 {{/*
 Expand the name of the chart.
 */}}
-{{- define "[[project-name]].name" -}}
+{{- define "{{.ProjectName}}.name" -}}
 {{- default .Chart.Name .Values.nameOverride | trunc 63 | trimSuffix "-" }}
 {{- end }}
 
@@ -10,7 +10,7 @@ Create a default fully qualified app name.
 We truncate at 63 chars because some Kubernetes name fields are limited to this (by the DNS naming spec).
 If release name contains chart name it will be used as a full name.
 */}}
-{{- define "[[project-name]].fullname" -}}
+{{- define "{{.ProjectName}}.fullname" -}}
 {{- if .Values.fullnameOverride }}
 {{- .Values.fullnameOverride | trunc 63 | trimSuffix "-" }}
 {{- else }}
@@ -26,16 +26,16 @@ If release name contains chart name it will be used as a full name.
 {{/*
 Create chart name and version as used by the chart label.
 */}}
-{{- define "[[project-name]].chart" -}}
+{{- define "{{.ProjectName}}.chart" -}}
 {{- printf "%s-%s" .Chart.Name .Chart.Version | replace "+" "_" | trunc 63 | trimSuffix "-" }}
 {{- end }}
 
 {{/*
 Common labels
 */}}
-{{- define "[[project-name]].labels" -}}
-helm.sh/chart: {{ include "[[project-name]].chart" . }}
-{{ include "[[project-name]].selectorLabels" . }}
+{{- define "{{.ProjectName}}.labels" -}}
+helm.sh/chart: {{ include "{{.ProjectName}}.chart" . }}
+{{ include "{{.ProjectName}}.selectorLabels" . }}
 {{- if .Chart.AppVersion }}
 app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
 {{- end }}
@@ -45,17 +45,17 @@ app.kubernetes.io/managed-by: {{ .Release.Service }}
 {{/*
 Selector labels
 */}}
-{{- define "[[project-name]].selectorLabels" -}}
-app.kubernetes.io/name: {{ include "[[project-name]].name" . }}
+{{- define "{{.ProjectName}}.selectorLabels" -}}
+app.kubernetes.io/name: {{ include "{{.ProjectName}}.name" . }}
 app.kubernetes.io/instance: {{ .Release.Name }}
 {{- end }}
 
 {{/*
 Create the name of the service account to use
 */}}
-{{- define "[[project-name]].serviceAccountName" -}}
+{{- define "{{.ProjectName}}.serviceAccountName" -}}
 {{- if .Values.serviceAccount.create }}
-{{- default (include "[[project-name]].fullname" .) .Values.serviceAccount.name }}
+{{- default (include "{{.ProjectName}}.fullname" .) .Values.serviceAccount.name }}
 {{- else }}
 {{- default "default" .Values.serviceAccount.name }}
 {{- end }}

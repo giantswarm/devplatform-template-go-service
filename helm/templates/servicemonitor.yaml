@@ -2,9 +2,9 @@
 apiVersion: monitoring.coreos.com/v1
 kind: ServiceMonitor
 metadata:
-  name: {{ include "[[project-name]].fullname" . }}
+  name: {{ include "{{.ProjectName}}.fullname" . }}
   labels:
-    {{- include "[[project-name]].labels" . | nindent 4 }}
+    {{- include "{{.ProjectName}}.labels" . | nindent 4 }}
     {{- with .Values.monitoring.serviceMonitor.extraLabels }}
       {{- toYaml . | nindent 4 }}
     {{- end }}
@@ -14,5 +14,5 @@ spec:
     port: http
   selector:
     matchLabels:
-      {{- include "[[project-name]].selectorLabels" . | nindent 4 }}
+      {{- include "{{.ProjectName}}.selectorLabels" . | nindent 4 }}
 {{- end }}

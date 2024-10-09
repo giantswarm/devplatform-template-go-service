@@ -57,7 +57,7 @@
           "type": "string"
         },
         "name": {
-          "default": "[[project-name]]",
+          "default": "{{.ProjectName}}",
           "description": "Name of a logical database to use",
           "required": [],
           "title": "name",
@@ -106,7 +106,7 @@
           "type": "string"
         },
         "repository": {
-          "default": "[[registry-name]]/[[project-name]]",
+          "default": "{{.RegistryName}}/{{.ProjectName}}",
           "description": "Set the name of the repository within the registry.",
           "required": [],
           "title": "repository",
