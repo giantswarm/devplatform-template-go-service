@@ -1,8 +1,8 @@
 version: 2
-project_name: [[image-name]]
+project_name: {{.ImageName}}
 builds:
   - <<: &build_defaults
-      binary: [[image-name]]
+      binary: {{.ImageName}}
       main: main.go
       env:
         - CGO_ENABLED=0
@@ -23,8 +23,8 @@ archives:
       - none*
 dockers:
   - image_templates:
-      - "[[registry-domain]]/[[registry-name]]/[[image-name]]:{{ .Env.CURRENT_TAG }}-amd64"
-      - "[[registry-domain]]/[[registry-name]]/[[image-name]]:latest-amd64"
+      - "{{.RegistryDomain}}/{{.RegistryName}}/{{.ImageName}}:{{ .Env.CURRENT_TAG }}-amd64"
+      - "{{.RegistryDomain}}/{{.RegistryName}}/{{.ImageName}}:latest-amd64"
     dockerfile: Dockerfile
     use: buildx
     goos: linux
@@ -40,8 +40,8 @@ dockers:
     extra_files:
       - "templates"
   - image_templates:
-      - "[[registry-domain]]/[[registry-name]]/[[image-name]]:{{ .Env.CURRENT_TAG }}-arm64"
-      - "[[registry-domain]]/[[registry-name]]/[[image-name]]:latest-arm64"
+      - "{{.RegistryDomain}}/{{.RegistryName}}/{{.ImageName}}:{{ .Env.CURRENT_TAG }}-arm64"
+      - "{{.RegistryDomain}}/{{.RegistryName}}/{{.ImageName}}:latest-arm64"
     dockerfile: Dockerfile
     use: buildx
     goos: linux
@@ -57,14 +57,14 @@ dockers:
     extra_files:
       - "templates"
 docker_manifests:
-  - name_template: "[[registry-domain]]/[[registry-name]]/[[image-name]]:{{ .Env.CURRENT_TAG }}"
+  - name_template: "{{.RegistryDomain}}/{{.RegistryName}}/{{.ImageName}}:{{ .Env.CURRENT_TAG }}"
     image_templates:
-      - "[[registry-domain]]/[[registry-name]]/[[image-name]]:{{ .Env.CURRENT_TAG }}-amd64"
-      - "[[registry-domain]]/[[registry-name]]/[[image-name]]:{{ .Env.CURRENT_TAG }}-arm64"
-  - name_template: "[[registry-domain]]/[[registry-name]]/[[image-name]]:latest"
+      - "{{.RegistryDomain}}/{{.RegistryName}}/{{.ImageName}}:{{ .Env.CURRENT_TAG }}-amd64"
+      - "{{.RegistryDomain}}/{{.RegistryName}}/{{.ImageName}}:{{ .Env.CURRENT_TAG }}-arm64"
+  - name_template: "{{.RegistryDomain}}/{{.RegistryName}}/{{.ImageName}}:latest"
     image_templates:
-      - "[[registry-domain]]/[[registry-name]]/[[image-name]]:latest-amd64"
-      - "[[registry-domain]]/[[registry-name]]/[[image-name]]:latest-arm64"
+      - "{{.RegistryDomain}}/{{.RegistryName}}/{{.ImageName}}:latest-amd64"
+      - "{{.RegistryDomain}}/{{.RegistryName}}/{{.ImageName}}:latest-arm64"
 docker_signs:
   - cmd: cosign
     env:
