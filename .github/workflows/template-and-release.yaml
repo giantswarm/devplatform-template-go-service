@@ -9,7 +9,7 @@ on:
 
 jobs:
   validate-and-test:
-    uses: "rendered-project/.github/workflows/validate-test.yaml@use-boilerplate"
+    uses: "./rendered-project/.github/workflows/validate-test.yaml@use-boilerplate"
     defaults:
       run:
         working-directory: ./rendered-project/
