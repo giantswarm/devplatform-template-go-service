@@ -1,0 +1,15 @@
+name: Template and release project
+
+on:
+  push:
+    tags:
+      - "*"
+  pull_request:
+  workflow_dispatch: {}
+
+jobs:
+  validate-and-test:
+    uses: "./rendered-project/.github/workflows/validate-test.yaml"
+  defaults:
+    run:
+      working-directory: ./rendered-project/
