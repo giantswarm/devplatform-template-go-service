@@ -37,11 +37,6 @@ variables:
       - required
 
 skip_files:
-  - path: .git
-  - path: .git/**/**
-  - path: build
-  - path: build/**
-  - path: boilerplate-values.yml
   # paths to be copied directly, with no rendering
   - path: helm/README.md.gotmpl
   - path: helm/templates
