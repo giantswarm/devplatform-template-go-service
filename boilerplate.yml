@@ -39,3 +39,13 @@ variables:
 skip_files:
   - path: .git
   - path: .git/**/*
+  - path: boilerplate-values.yml
+  # paths to be copied directly, with no rendering
+  - path: helm/README.md.gotmpl
+  - path: helm/templates/NOTES.txt
+
+after:
+  - command: cp
+    args:
+      - helm/README.md.gotmpl
+      - "{{ outputFolder }}/helm/"

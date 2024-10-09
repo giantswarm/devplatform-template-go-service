@@ -12,6 +12,7 @@ builds:
     goarch:
       - amd64
       - arm64
+{{`
 snapshot:
   version_template: "{{ .Env.CURRENT_TAG }}"
 archives:
@@ -110,3 +111,4 @@ changelog:
       order: 1
     - title: Others
       order: 999
+`}}
