@@ -54,7 +54,7 @@ jobs:
       - name: Setup Syft
         uses: anchore/sbom-action/download-syft@61119d458adab75f756bc0b9e4bde25725f86a7a # v0.17.2
       - name: Setup Cosign
-        uses: sigstore/cosign-installer@4959ce089c160fddf62f7b42464195ba1a56d382 # v3.6.0
+        uses: sigstore/cosign-installer@dc72c7d5c4d10cd6bcb8cf6e3fd625a9e5e537da # v3.7.0
       - name: Setup Helm
         run: |
           curl -L -sS -o helm-v3.16.1-linux-amd64.tar.gz https://get.helm.sh/helm-v3.16.1-linux-amd64.tar.gz
