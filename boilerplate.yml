@@ -38,19 +38,30 @@ variables:
 
 skip_files:
   - path: .git
-  - path: .git/**/*
+  - path: .git/**/**
+  - path: build
+  - path: build/**
   - path: boilerplate-values.yml
   # paths to be copied directly, with no rendering
   - path: helm/README.md.gotmpl
-  - path: helm/templates/**
+  - path: helm/templates
+  - path: helm/templates/**/**
+  - path: templates
+  - path: templates/**/**
 
-after:
-  - command: cp
-    args:
-      - helm/README.md.gotmpl
-      - "{{ outputFolder }}/helm/"
-  - command: cp
-    args:
-      - -a
-      - helm/templates/
-      - "{{ outputFolder }}/helm/"
+hooks:
+  after:
+    - command: cp
+      args:
+        - helm/README.md.gotmpl
+        - "{{ outputFolder }}/helm/"
+    - command: cp
+      args:
+        - -a
+        - helm/templates/
+        - "{{ outputFolder }}/helm/"
+    - command: cp
+      args:
+        - -a
+        - templates/
+        - "{{ outputFolder }}/"
