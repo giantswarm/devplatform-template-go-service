@@ -128,4 +128,4 @@ jobs:
             awk -F" " '/^Digest:/ {print $2}' /tmp/helm-push.log
           )" >> "$GITHUB_ENV"
       - name: Sign the helm chart
-        run: cosign sign --upload=true -y "ghcr.io/$GITHUB_REPOSITORY_OWNER/charts/$(echo $GITHUB_REPOSITORY | awk -F "/" '{print $NF}')@${CHART_SHA256}"
+        run: cosign sign --upload=true -y "ghcr.io/$(echo $GITHUB_REPOSITORY_OWNER | awk '{print tolower($0)}')/charts/$(echo $GITHUB_REPOSITORY | awk -F "/" '{print tolower($NF)}')@${CHART_SHA256}"
