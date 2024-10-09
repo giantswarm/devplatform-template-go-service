@@ -10,6 +10,6 @@ on:
 jobs:
   validate-and-test:
     uses: "./rendered-project/.github/workflows/validate-test.yaml"
-    defaults:
-      run:
-        working-directory: ./rendered-project/
+    #defaults:
+    #  run:
+    #    working-directory: ./rendered-project/
