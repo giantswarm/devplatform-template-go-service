@@ -42,10 +42,15 @@ skip_files:
   - path: boilerplate-values.yml
   # paths to be copied directly, with no rendering
   - path: helm/README.md.gotmpl
-  - path: helm/templates/NOTES.txt
+  - path: helm/templates/**
 
 after:
   - command: cp
     args:
       - helm/README.md.gotmpl
+      - "{{ outputFolder }}/helm/"
+  - command: cp
+    args:
+      - -a
+      - helm/templates/
       - "{{ outputFolder }}/helm/"
