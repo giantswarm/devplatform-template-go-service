@@ -1,0 +1,7 @@
+ProjectName: album-catalog
+RepoOwner: honeybadger
+ImageName: album-catalog
+RegistryDomain: gsoci.azurecr.io
+RegistryName: giantswarm
+BackstageEntityOwner: honeybadger
+BackstageEntityLifecycle: experimental

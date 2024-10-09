@@ -3,40 +3,39 @@ variables:
     type: string
     validations:
       - required
-      - alphanumeric
 
   - name: RepoOwner
     type: string
     validations:
       - required
-      - alphanumeric
 
   - name: ImageName
     type: string
+    default: "{{ .ProjectName }}"
     validations:
       - required
-      - alphanumeric
 
   - name: RegistryDomain
     type: string
     validations:
       - required
-      - alphanumeric
+      - url
 
   - name: RegistryName
     type: string
     validations:
       - required
-      - alphanumeric
 
   - name: BackstageEntityOwner
     type: string
     validations:
       - required
-      - alphanumeric
 
   - name: BackstageEntityLifecycle
     type: string
     validations:
       - required
-      - alphanumeric
+
+skip_files:
+  - path: .git
+  - path: .git/**/*
