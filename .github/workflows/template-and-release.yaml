@@ -17,10 +17,7 @@ jobs:
     steps:
       - uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4
       - name: Install boilerplate
-        uses: jaxxstorm/action-install-gh-release@25d5e2dd555cd74f1fab9ac1e6ea117acde2c0c4 # v1.12.0
-        with:
-          repo: gruntwork-io/boilerplate
-          cache: enable
+        run: curl -fsSL https://github.com/gruntwork-io/boilerplate/releases/latest/download/boilerplate_linux_amd64 -o /usr/local/bin/boilerplate && chmod +x /usr/local/bin/boilerplate
       - name: run boilerplate
         run: boilerplate --non-interactive --template-url project-template --output-folder . --var-file boilerplate-values.yml
       - uses: stefanzweifel/git-auto-commit-action@v5
