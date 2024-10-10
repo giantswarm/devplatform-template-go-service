@@ -21,5 +21,15 @@ jobs:
       - name: Copy the current state for use with templating
         run: cp -a project-template/ boilerplate-values.yml /tmp
       - name: Create and checkout temp branch
+        run: |
+          git checkout rendered-project
       - name: Run boilerplate
         run: boilerplate --non-interactive --template-url /tmp/project-template --output-folder . --var-file /tmp/boilerplate-values.yml
+      - name: Commit rendered project
+        id: cpr
+        uses: peter-evans/create-pull-request@v7
+      - name: Check outputs
+        if: ${{ steps.cpr.outputs.pull-request-number }}
+        run: |
+          echo "Pull Request Number - ${{ steps.cpr.outputs.pull-request-number }}"
+          echo "Pull Request URL - ${{ steps.cpr.outputs.pull-request-url }}"
