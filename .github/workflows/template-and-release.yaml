@@ -7,9 +7,13 @@ on:
   pull_request:
   workflow_dispatch: {}
 
+defaults:
+  run:
+    working-directory: rendered-project
+
 jobs:
   validate-and-test:
-    uses: "./rendered-project/.github/workflows/validate-test.yaml"
+    uses: "./.github/workflows/validate-test.yaml"
     #defaults:
     #  run:
     #    working-directory: ./rendered-project/
