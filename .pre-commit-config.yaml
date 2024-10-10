@@ -21,7 +21,7 @@ repos:
 
   # general file formatting
   - repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v4.6.0
+    rev: v5.0.0
     hooks:
       - id: check-added-large-files
       - id: check-executables-have-shebangs
@@ -51,13 +51,13 @@ repos:
 
   # security
   - repo: https://github.com/gitleaks/gitleaks
-    rev: v8.19.3
+    rev: v8.20.1
     hooks:
       - id: gitleaks
 
   # dockerfiles
   - repo: https://github.com/hadolint/hadolint
-    rev: v2.13.0-beta
+    rev: v2.13.1-beta
     hooks:
       - id: hadolint-docker
 
