@@ -16,8 +16,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4
+      - name: copy actions
+        run: mkdir ./.github/actions/validate-test && cp "./rendered-project/.github/workflows/validate-test.yaml" ./.github/actions/validate-test/action.yml
       - name: use actions
-        uses: "./rendered-project/.github/workflows/validate-test.yaml"
+        uses: "./.github/actions/validate-test"
     #defaults:
     #  run:
     #    working-directory: ./rendered-project/
