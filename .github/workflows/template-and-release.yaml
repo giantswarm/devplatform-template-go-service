@@ -16,18 +16,17 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4
-      # - name: Install boilerplate
-      #   uses: jaxxstorm/action-install-gh-release@25d5e2dd555cd74f1fab9ac1e6ea117acde2c0c4 # v1.12.0
-      #   with:
-      #     repo: gruntwork-io/boilerplate
-      #     tag: v0.5.18
-      #     cache: enable
-      # - name: run boilerplate
-      #   run: boilerplate --non-interactive --template-url project-template --output-folder rendered-project --var-file boilerplate-values.yml
-      #- name: copy actions
-      #  run: cp ./rendered-project/.github/workflows/validate-test.yaml ./.github/workflows && ls -la ./.github/workflows
-  build:
-    # defaults:
-    # run:
-    needs: [checkout]
-    uses: "./.github/workflows/validate-test.yaml"
+      - name: Install boilerplate
+        uses: jaxxstorm/action-install-gh-release@25d5e2dd555cd74f1fab9ac1e6ea117acde2c0c4 # v1.12.0
+        with:
+          repo: gruntwork-io/boilerplate
+          tag: v0.5.18
+          cache: enable
+      - name: run boilerplate
+        run: boilerplate --non-interactive --template-url project-template --output-folder . --var-file boilerplate-values.yml
+      - uses: stefanzweifel/git-auto-commit-action@v5
+  #  build:
+  #    # defaults:
+  #    # run:
+  #    needs: [checkout]
+  #    uses: "./.github/workflows/validate-test.yaml"
