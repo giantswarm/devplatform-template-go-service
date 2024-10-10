@@ -20,9 +20,10 @@ jobs:
         run: curl -fsSL https://github.com/gruntwork-io/boilerplate/releases/latest/download/boilerplate_linux_amd64 -o /usr/local/bin/boilerplate && chmod +x /usr/local/bin/boilerplate
       - name: Copy the current state for use with templating
         run: cp -a project-template/ boilerplate-values.yml /tmp
-      - name: Create and checkout temp branch
-        run: |
-          git checkout rendered-project
+      - name: Checkour rendered project branch
+        uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4
+        with:
+          ref: "rendered-project"
       - name: Run boilerplate
         run: boilerplate --non-interactive --template-url /tmp/project-template --output-folder . --var-file /tmp/boilerplate-values.yml
       - name: Commit rendered project
