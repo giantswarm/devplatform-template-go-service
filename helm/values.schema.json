@@ -192,10 +192,7 @@
                 "type": "string"
               }
             },
-            "required": [
-              "secretName",
-              "hosts"
-            ],
+            "required": ["secretName", "hosts"],
             "type": "object"
           },
           "required": [],
@@ -404,3 +401,4 @@
   "required": [],
   "type": "object"
 }
+
