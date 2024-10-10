@@ -45,6 +45,7 @@ jobs:
         with:
           branch: "rendered-project-${{ github.head_ref }}"
           delete-branch: true
+          token: ${{ secrets.WORKFLOW_PAT }}
       - name: Create comment when no change
         if: ${{ !steps.cpr.outputs.pull-request-number }}
         uses: peter-evans/create-or-update-comment@v4
