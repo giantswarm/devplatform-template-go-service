@@ -24,8 +24,10 @@ archives:
       - none*
 dockers:
   - image_templates:
-      - "{{.RegistryDomain}}/{{.RegistryName}}/{{.ImageName}}:{{ .Env.CURRENT_TAG }}-amd64"
-      - "{{.RegistryDomain}}/{{.RegistryName}}/{{.ImageName}}:latest-amd64"
+
+      - "ghcr.io/giantswarm/demo-album-catalog:{{ .Env.CURRENT_TAG }}-amd64"
+      - "ghcr.io/giantswarm/demo-album-catalog:latest-amd64"
+
     dockerfile: Dockerfile
     use: buildx
     goos: linux
@@ -41,8 +43,10 @@ dockers:
     extra_files:
       - "templates"
   - image_templates:
-      - "{{.RegistryDomain}}/{{.RegistryName}}/{{.ImageName}}:{{ .Env.CURRENT_TAG }}-arm64"
-      - "{{.RegistryDomain}}/{{.RegistryName}}/{{.ImageName}}:latest-arm64"
+
+      - "ghcr.io/giantswarm/demo-album-catalog:{{ .Env.CURRENT_TAG }}-arm64"
+      - "ghcr.io/giantswarm/demo-album-catalog:latest-arm64"
+
     dockerfile: Dockerfile
     use: buildx
     goos: linux
@@ -58,14 +62,16 @@ dockers:
     extra_files:
       - "templates"
 docker_manifests:
-  - name_template: "{{.RegistryDomain}}/{{.RegistryName}}/{{.ImageName}}:{{ .Env.CURRENT_TAG }}"
+
+  - name_template: "ghcr.io/giantswarm/demo-album-catalog:{{ .Env.CURRENT_TAG }}"
     image_templates:
-      - "{{.RegistryDomain}}/{{.RegistryName}}/{{.ImageName}}:{{ .Env.CURRENT_TAG }}-amd64"
-      - "{{.RegistryDomain}}/{{.RegistryName}}/{{.ImageName}}:{{ .Env.CURRENT_TAG }}-arm64"
-  - name_template: "{{.RegistryDomain}}/{{.RegistryName}}/{{.ImageName}}:latest"
+      - "ghcr.io/giantswarm/demo-album-catalog:{{ .Env.CURRENT_TAG }}-amd64"
+      - "ghcr.io/giantswarm/demo-album-catalog:{{ .Env.CURRENT_TAG }}-arm64"
+  - name_template: "ghcr.io/giantswarm/demo-album-catalog:latest"
     image_templates:
-      - "{{.RegistryDomain}}/{{.RegistryName}}/{{.ImageName}}:latest-amd64"
-      - "{{.RegistryDomain}}/{{.RegistryName}}/{{.ImageName}}:latest-arm64"
+      - "ghcr.io/giantswarm/demo-album-catalog:latest-amd64"
+      - "ghcr.io/giantswarm/demo-album-catalog:latest-arm64"
+
 docker_signs:
   - cmd: cosign
     env:
@@ -78,13 +84,15 @@ docker_signs:
     output: true
 source:
   enabled: true
-  name_template: "{{ .ProjectName }}_{{ .Env.CURRENT_TAG }}_src"
+
+  name_template: "demo-album-catalog_{{ .Env.CURRENT_TAG }}_src"
 sboms:
   - artifacts: archive
   - id: source
     artifacts: source
     documents:
-      - "{{ .ProjectName }}_{{ .Env.CURRENT_TAG }}_sbom.spdx.json"
+      - "demo-album-catalog_{{ .Env.CURRENT_TAG }}_sbom.spdx.json"
+
 release: {}
 checksum: {}
 signs:
@@ -111,4 +119,3 @@ changelog:
       order: 1
     - title: Others
       order: 999
-
