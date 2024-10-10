@@ -23,7 +23,7 @@ jobs:
         run: curl -fsSL https://github.com/gruntwork-io/boilerplate/releases/latest/download/boilerplate_linux_amd64 -o /usr/local/bin/boilerplate && chmod +x /usr/local/bin/boilerplate
       - name: Copy the current state for use with templating
         run: cp -a project-template/ boilerplate-values.yml /tmp
-      - name: Checkour rendered project branch
+      - name: Checkout rendered project branch
         uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4
         with:
           ref: "rendered-project"
@@ -36,13 +36,8 @@ jobs:
         id: cpr
         uses: peter-evans/create-pull-request@v7
         with:
-          branch: "rendered-project-${GITHUB_REF_NAME}"
+          branch: "rendered-project-${{ github.ref_name }}"
           delete-branch: true
-      - name: Set autocommit on the PR
-        if: ${{ steps.cpr.outputs.pull-request-number }}
-        uses: peter-evans/enable-pull-request-automerge@v3
-        with:
-          pull-request-number: ${{ steps.cpr.outputs.pull-request-number }}
       - name: Create comment when no change
         if: ${{ !steps.cpr.outputs.pull-request-number }}
         uses: peter-evans/create-or-update-comment@v4
