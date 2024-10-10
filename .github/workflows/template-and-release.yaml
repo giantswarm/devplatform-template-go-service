@@ -24,11 +24,10 @@ jobs:
       #     cache: enable
       # - name: run boilerplate
       #   run: boilerplate --non-interactive --template-url project-template --output-folder rendered-project --var-file boilerplate-values.yml
-      - name: copy actions
-        run: cp ./rendered-project/.github/workflows/validate-test.yaml ./.github/workflows && ls -la ./.github/workflows
+      #- name: copy actions
+      #  run: cp ./rendered-project/.github/workflows/validate-test.yaml ./.github/workflows && ls -la ./.github/workflows
   build:
     # defaults:
     # run:
-    # working-directory: ./rendered-project/
     needs: [checkout]
     uses: "./.github/workflows/validate-test.yaml"
