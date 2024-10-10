@@ -12,8 +12,12 @@ defaults:
     working-directory: rendered-project
 
 jobs:
-  validate-and-test:
-    uses: "./rendered-project/.github/workflows/validate-test.yaml"
+  checkout:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4
+      - name: use actions
+        uses: "./rendered-project/.github/workflows/validate-test.yaml"
     #defaults:
     #  run:
     #    working-directory: ./rendered-project/
