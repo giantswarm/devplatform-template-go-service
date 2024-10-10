@@ -1,4 +1,4 @@
-module github.com/[[repo-owner]]/[[project-name]]
+module github.com/{{.RepoOwner}}/{{.ProjectName}}
 
 go 1.22.2
 

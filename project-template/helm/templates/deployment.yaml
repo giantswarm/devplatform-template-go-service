@@ -1,16 +1,16 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ include "[[project-name]].fullname" . }}
+  name: {{ include "project.fullname" . }}
   labels:
-    {{- include "[[project-name]].labels" . | nindent 4 }}
+    {{- include "project.labels" . | nindent 4 }}
 spec:
   {{- if not .Values.autoscaling.enabled }}
   replicas: {{ .Values.replicaCount }}
   {{- end }}
   selector:
     matchLabels:
-      {{- include "[[project-name]].selectorLabels" . | nindent 6 }}
+      {{- include "project.selectorLabels" . | nindent 6 }}
   template:
     metadata:
       {{- with .Values.podAnnotations }}
@@ -18,13 +18,13 @@ spec:
         {{- toYaml . | nindent 8 }}
       {{- end }}
       labels:
-        {{- include "[[project-name]].selectorLabels" . | nindent 8 }}
+        {{- include "project.selectorLabels" . | nindent 8 }}
     spec:
       {{- with .Values.imagePullSecrets }}
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-      serviceAccountName: {{ include "[[project-name]].serviceAccountName" . }}
+      serviceAccountName: {{ include "project.serviceAccountName" . }}
       securityContext:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
       containers:
@@ -120,7 +120,7 @@ spec:
                     - key: "app.kubernetes.io/name"
                       operator: In
                       values:
-                        - {{ include "[[project-name]].name" . }}
+                        - {{ include "project.name" . }}
                     - key: "app.kubernetes.io/instance"
                       operator: In
                       values:
