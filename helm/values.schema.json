@@ -1,0 +1,404 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "additionalProperties": false,
+  "properties": {
+    "autoscaling": {
+      "additionalProperties": false,
+      "properties": {
+        "enabled": {
+          "default": true,
+          "description": "Turn on Pod replicas number autoscaling instead of setting a constant value. your\ncluster must support [ Horizontal Pod Autoscaling ](https://kubernetes.io/docs/tasks/run-application/horizontal-pod-autoscale/).",
+          "required": [],
+          "title": "enabled",
+          "type": "boolean"
+        },
+        "maxReplicas": {
+          "default": 10,
+          "description": "Max number of Pods autoscaler can deploy.",
+          "required": [],
+          "title": "maxReplicas",
+          "type": "integer"
+        },
+        "minReplicas": {
+          "default": 3,
+          "description": "Min number of Pods autoscaler can deploy.",
+          "required": [],
+          "title": "minReplicas",
+          "type": "integer"
+        },
+        "targetCPUUtilizationPercentage": {
+          "default": 80,
+          "description": "Pod scale up critieria based on CPU usage.",
+          "required": [],
+          "title": "targetCPUUtilizationPercentage",
+          "type": "integer"
+        },
+        "targetMemoryUtilizationPercentage": {
+          "default": 80,
+          "description": "Pod scale up critieria based on Memory usage.",
+          "required": [],
+          "title": "targetMemoryUtilizationPercentage",
+          "type": "integer"
+        }
+      },
+      "required": [],
+      "title": "autoscaling",
+      "type": "object"
+    },
+    "database": {
+      "additionalProperties": false,
+      "description": "Secret that contains database connection details. It has to be present in the\nsame namespace as the Chart is deployed to. Has to have `endpoint`, `username`\nand `password` keys. May contain `port` key.",
+      "properties": {
+        "connectionSecretName": {
+          "default": "",
+          "description": "Secret that contains database connection details. It has to be present in the\nsame namespace as the Chart is deployed to. Has to have `endpoint`, `username`\nand `password` keys. May contain `port` key.",
+          "required": [],
+          "title": "connectionSecretName",
+          "type": "string"
+        },
+        "name": {
+          "default": "demo-album-catalog",
+          "description": "Name of a logical database to use",
+          "required": [],
+          "title": "name",
+          "type": "string"
+        }
+      },
+      "required": [],
+      "title": "database",
+      "type": "object"
+    },
+    "fullnameOverride": {
+      "default": "",
+      "description": "Override the default name generated for this specific chart Release.",
+      "required": [],
+      "title": "fullnameOverride",
+      "type": "string"
+    },
+    "ginMode": {
+      "default": "debug",
+      "description": "Configure run mode of the gin web framework; can be 'debug' or 'production'",
+      "required": [],
+      "title": "ginMode",
+      "type": "string"
+    },
+    "global": {
+      "description": "Global values are values that can be accessed from any chart or subchart by exactly the same name.",
+      "required": [],
+      "title": "global",
+      "type": "object"
+    },
+    "image": {
+      "additionalProperties": false,
+      "properties": {
+        "pullPolicy": {
+          "default": "IfNotPresent",
+          "description": "Configure image pull policy.",
+          "required": [],
+          "title": "pullPolicy",
+          "type": "string"
+        },
+        "registry": {
+          "default": "ghcr.io",
+          "description": "Set the domain of your container images registry.",
+          "required": [],
+          "title": "registry",
+          "type": "string"
+        },
+        "repository": {
+          "default": "giantswarm/demo-album-catalog",
+          "description": "Set the name of the repository within the registry.",
+          "required": [],
+          "title": "repository",
+          "type": "string"
+        },
+        "tag": {
+          "default": "",
+          "description": "Image tag to use, defaults to .Chart.AppVersion",
+          "required": [],
+          "title": "tag",
+          "type": "string"
+        }
+      },
+      "required": [],
+      "title": "image",
+      "type": "object"
+    },
+    "imagePullSecrets": {
+      "description": "Configure login secrets for the container images registry.",
+      "items": {
+        "required": []
+      },
+      "required": [],
+      "title": "imagePullSecrets",
+      "type": "array"
+    },
+    "inMemoryStore": {
+      "default": false,
+      "description": "When set to \"true\", the app doesn't use any database at all and stores all the\ndata in memory only.",
+      "required": [],
+      "title": "inMemoryStore",
+      "type": "boolean"
+    },
+    "ingress": {
+      "additionalProperties": false,
+      "properties": {
+        "annotations": {
+          "additionalProperties": true,
+          "description": "Optional annotations for the Ingress definition. If your cluster has \"CertManager\"\noperator running, you can use \"cert-manager.io/cluster-issuer\"\nannotation to [automatically generate a certificate for it](https://cert-manager.io/docs/usage/).",
+          "required": [],
+          "title": "annotations"
+        },
+        "className": {
+          "default": "nginx",
+          "description": "Ingress controller implementations use this field to know whether they should be\nserving this Ingress resource, by a transitive connection.",
+          "required": [],
+          "title": "className",
+          "type": "string"
+        },
+        "enabled": {
+          "default": true,
+          "description": "Should the Service be accessible through an Ingress. This needs an Ingress controller\nto be configured already on your cluster.",
+          "required": [],
+          "title": "enabled",
+          "type": "boolean"
+        },
+        "host": {
+          "default": "chart-example.local",
+          "description": "HTTP host that you want to use for your service.",
+          "format": "idn-hostname",
+          "required": [],
+          "title": "host",
+          "type": "string"
+        },
+        "tls": {
+          "description": "Optional TLS certificate configuration. You can use it with \"CertManager\" or\nprovide your own certificate.",
+          "examples": [
+            "- secretName: chart-example-tls\n  hosts:\n    - chart-example.local"
+          ],
+          "items": {
+            "properties": {
+              "hosts": {
+                "items": {
+                  "format": "idn-hostname",
+                  "required": [],
+                  "type": "string"
+                },
+                "required": [],
+                "type": "array"
+              },
+              "secretName": {
+                "required": [],
+                "type": "string"
+              }
+            },
+            "required": ["secretName", "hosts"],
+            "type": "object"
+          },
+          "required": [],
+          "title": "tls",
+          "type": "array"
+        }
+      },
+      "required": [],
+      "title": "ingress",
+      "type": "object"
+    },
+    "monitoring": {
+      "additionalProperties": false,
+      "properties": {
+        "serviceMonitor": {
+          "additionalProperties": false,
+          "description": "If your cluster supports prometheus-operator configuration of metrics data,\nenable this to have metrics from your application automatically ingested\nby prometheus.",
+          "properties": {
+            "enabled": {
+              "default": true,
+              "required": [],
+              "title": "enabled",
+              "type": "boolean"
+            },
+            "extraLabels": {
+              "additionalProperties": true,
+              "description": "Optional extra labels to put on the serviceMonitor",
+              "required": [],
+              "title": "extraLabels"
+            }
+          },
+          "required": [],
+          "title": "serviceMonitor",
+          "type": "object"
+        }
+      },
+      "required": [],
+      "title": "monitoring",
+      "type": "object"
+    },
+    "nameOverride": {
+      "default": "",
+      "description": "Override the default name generated for the chart objects.",
+      "required": [],
+      "title": "nameOverride",
+      "type": "string"
+    },
+    "nodeSelector": {
+      "additionalProperties": false,
+      "description": "Optional node delector to limit the nodes where pods of the chart can be deployed.",
+      "required": [],
+      "title": "nodeSelector",
+      "type": "object"
+    },
+    "pdb": {
+      "additionalProperties": false,
+      "description": "Should the chart deploy a [PodDisruptionBudget](https://kubernetes.io/docs/tasks/run-application/configure-pdb/)\nto limit disruptions based on administrative tasks.",
+      "properties": {
+        "enabled": {
+          "default": true,
+          "required": [],
+          "title": "enabled",
+          "type": "boolean"
+        }
+      },
+      "required": [],
+      "title": "pdb",
+      "type": "object"
+    },
+    "podAnnotations": {
+      "additionalProperties": false,
+      "description": "Set additional annotations for the pods created.",
+      "required": [],
+      "title": "podAnnotations",
+      "type": "object"
+    },
+    "podListenPort": {
+      "default": 8080,
+      "description": "Configure the TCP port on which your pods will listen for connections.",
+      "required": [],
+      "title": "podListenPort",
+      "type": "integer"
+    },
+    "redisConnectionSecretName": {
+      "default": "",
+      "description": "Secret that contains redis connection details. It has to be present in the\nsame namespace as the Chart is deployed to. Has to have `host`, `username`\nand `password` keys. May contain `port` key.",
+      "required": [],
+      "title": "redisConnectionSecretName",
+      "type": "string"
+    },
+    "replicaCount": {
+      "default": 3,
+      "description": "Number of Pod replicas to deploy. Used only if 'autoscaling.enabled' is 'false'.",
+      "required": [],
+      "title": "replicaCount",
+      "type": "integer"
+    },
+    "resources": {
+      "additionalProperties": false,
+      "description": "Configure [Pod resources](https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/).",
+      "properties": {
+        "limits": {
+          "additionalProperties": false,
+          "properties": {
+            "cpu": {
+              "default": "500m",
+              "required": [],
+              "title": "cpu",
+              "type": "string"
+            },
+            "memory": {
+              "default": "512Mi",
+              "required": [],
+              "title": "memory",
+              "type": "string"
+            }
+          },
+          "required": [],
+          "title": "limits",
+          "type": "object"
+        },
+        "requests": {
+          "additionalProperties": false,
+          "properties": {
+            "cpu": {
+              "default": "100m",
+              "required": [],
+              "title": "cpu",
+              "type": "string"
+            },
+            "memory": {
+              "default": "128Mi",
+              "required": [],
+              "title": "memory",
+              "type": "string"
+            }
+          },
+          "required": [],
+          "title": "requests",
+          "type": "object"
+        }
+      },
+      "required": [],
+      "title": "resources",
+      "type": "object"
+    },
+    "service": {
+      "additionalProperties": false,
+      "properties": {
+        "annotations": {
+          "additionalProperties": false,
+          "description": "Optional annotations for the Service definition. If your cluster has \"ExternalDNS\"\noperator running, you can use \"external-dns.alpha.kubernetes.io/hostname\"\nannotation to [automatically register DNS name for your service](https://github.com/kubernetes-sigs/external-dns).",
+          "required": [],
+          "title": "annotations",
+          "type": "object"
+        },
+        "port": {
+          "default": 80,
+          "description": "TCP port that the service will be exposed on.",
+          "required": [],
+          "title": "port",
+          "type": "integer"
+        },
+        "type": {
+          "default": "ClusterIP",
+          "description": "The type of [ Service ](https://kubernetes.io/docs/concepts/services-networking/service/#publishing-services-service-types).",
+          "required": [],
+          "title": "type",
+          "type": "string"
+        }
+      },
+      "required": [],
+      "title": "service",
+      "type": "object"
+    },
+    "serviceAccount": {
+      "additionalProperties": false,
+      "properties": {
+        "annotations": {
+          "additionalProperties": false,
+          "description": "Annotations to add to the service account.",
+          "required": [],
+          "title": "annotations",
+          "type": "object"
+        },
+        "create": {
+          "default": true,
+          "description": "Specifies whether a service account should be created.",
+          "required": [],
+          "title": "create",
+          "type": "boolean"
+        },
+        "name": {
+          "default": "",
+          "description": "The name of the service account to use.\nIf not set and create is true, a name is generated using the fullname template",
+          "required": [],
+          "title": "name",
+          "type": "string"
+        }
+      },
+      "required": [],
+      "title": "serviceAccount",
+      "type": "object"
+    }
+  },
+  "required": [],
+  "type": "object"
+}
+
