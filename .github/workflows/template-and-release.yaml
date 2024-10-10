@@ -29,6 +29,9 @@ jobs:
           ref: "rendered-project"
       - name: Run boilerplate
         run: boilerplate --non-interactive --template-url /tmp/project-template --output-folder . --var-file /tmp/boilerplate-values.yml
+      - name: Run pre-commit
+        continue-on-error: true
+        uses: pre-commit/action@2c7b3805fd2a0fd8c1884dcaebf91fc102a13ecd # v3.0.1
       - name: Commit rendered project
         id: cpr
         uses: peter-evans/create-pull-request@v7
