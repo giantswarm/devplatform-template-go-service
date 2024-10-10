@@ -13,7 +13,7 @@ defaults:
 
 jobs:
   validate-and-test:
-    uses: "./.github/workflows/validate-test.yaml"
+    uses: "./rendered-project/.github/workflows/validate-test.yaml"
     #defaults:
     #  run:
     #    working-directory: ./rendered-project/
