@@ -12,8 +12,11 @@ on:
 #     working-directory: rendered-project
 
 jobs:
-  checkout:
+  rendered-project:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
     steps:
       - uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4
       - name: Install boilerplate
@@ -29,8 +32,27 @@ jobs:
       - name: Commit rendered project
         id: cpr
         uses: peter-evans/create-pull-request@v7
-      - name: Check outputs
+        with:
+          branch: "rendered-project-${GITHUB_REF_NAME}"
+          delete-branch: true
+      - name: Set autocommit on the PR
         if: ${{ steps.cpr.outputs.pull-request-number }}
-        run: |
-          echo "Pull Request Number - ${{ steps.cpr.outputs.pull-request-number }}"
-          echo "Pull Request URL - ${{ steps.cpr.outputs.pull-request-url }}"
+        uses: peter-evans/enable-pull-request-automerge@v3
+        with:
+          pull-request-number: ${{ steps.cpr.outputs.pull-request-number }}
+      - name: Create comment when no change
+        if: ${{ !steps.cpr.outputs.pull-request-number }}
+        uses: peter-evans/create-or-update-comment@v4
+        with:
+          issue-number: ${{ github.event.number }}
+          body: |
+            Your current PR doesn't make any change in the rendered project. No PR was created.
+      - name: Create comment when change
+        if: ${{ steps.cpr.outputs.pull-request-number }}
+        uses: peter-evans/create-or-update-comment@v4
+        with:
+          issue-number: ${{ github.event.number }}
+          body: |
+            A Pull Request was created to preview the result of this PR.
+            Make sure you review and accept the created PR before you merge this one!
+            Pull Request URL - ${{ steps.cpr.outputs.pull-request-url }}
