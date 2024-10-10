@@ -20,7 +20,12 @@ jobs:
         run: mkdir -p ./.github/actions/validate-test && cp "./rendered-project/.github/workflows/validate-test.yaml" ./.github/actions/validate-test/action.yml
       - name: use actions
         uses: "./.github/actions/validate-test"
-        working-directory: rendered-project
-    #defaults:
-    #  run:
-    #    working-directory: ./rendered-project/
+  build:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./rendered-project/
+    needs: [checkout]
+    steps:
+      - name: use actions
+        uses: "./.github/actions/validate-test"
