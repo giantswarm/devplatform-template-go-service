@@ -36,6 +36,8 @@ jobs:
           repo: norwoodj/helm-docs
           tag: v1.11.0
           cache: enable
+      - name: Replace source repo info
+        run: sed -i 's/LABEL\ org\.opencontainers\.image\.source=https:\/\/github\.com\/giantswarm\/demo-album-catalog/LABEL\ org\.opencontainers\.image\.source=https:\/\/github\.com\/giantswarm\/devplatform-template-go-service/' Dockerfile
       - name: Run pre-commit
         continue-on-error: true
         uses: pre-commit/action@2c7b3805fd2a0fd8c1884dcaebf91fc102a13ecd # v3.0.1
