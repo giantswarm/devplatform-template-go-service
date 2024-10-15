@@ -1,0 +1,17 @@
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: {{.ProjectName}}
+  description: A Golang service responding to HTTP requests.
+  annotations:
+    backstage.io/kubernetes-id: {{.ProjectName}}
+    backstage.io/source-location: url:https://github.com/{{.RepoOwner}}/{{.ProjectName}}
+    backstage.io/techdocs-ref: url:https://github.com/{{.RepoOwner}}/{{.ProjectName}}/tree/main
+    giantswarm.io/deployment-names: {{.ProjectName}},{{.ProjectName}}-app
+    giantswarm.io/ingress-host: "{{.ProjectName}}.demotech-rds.awsprod.gigantic.io"
+    giantswarm.io/grafana-dashboard: "/d/cdyhcdr5hge0wa/demotech-web-application-vitals"
+    github.com/project-slug: {{.RepoOwner}}/{{.ProjectName}}
+spec:
+  type: service
+  lifecycle: {{.BackstageEntityLifecycle}}
+  owner: {{.BackstageEntityOwner}}

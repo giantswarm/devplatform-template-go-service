@@ -29,11 +29,11 @@ jobs:
         run: |
           echo "CURRENT_TAG=$GITHUB_REF_NAME" >> $GITHUB_ENV
       - name: Snapshot build - generate tag
-        if: ${{ !startsWith(github.ref, 'refs/tags/') }}
+        if: {{`${{ !startsWith(github.ref, 'refs/tags/') }}`}}
         run: |
           sudo apt-get install -y --no-install-recommends python3-semver
-          export NEXT_TAG=$(pysemver nextver $(git describe --abbrev=0 2>/dev/null || echo "0.0.0") patch)
-          echo "CURRENT_TAG=${NEXT_TAG}-$(git describe | awk -F '-' '{print "dev."$2"."$3}')" >> $GITHUB_ENV
+          export NEXT_TAG=$(pysemver nextver $(git describe --tags --abbrev=0 2>/dev/null || echo "0.0.0") patch)
+          echo "CURRENT_TAG=${NEXT_TAG}-$(git describe --tags | awk -F '-' '{print "dev."$2"."$3}')" >> $GITHUB_ENV
       - name: Generate tag - print the tag
         run: |
           echo "CURRENT_TAG=$CURRENT_TAG"
@@ -69,9 +69,9 @@ jobs:
         with:
           registry: ghcr.io
           username: build_bot
-          password: ${{ secrets.GITHUB_TOKEN }}
+          password: {{`${{ secrets.GITHUB_TOKEN }}`}}
       - name: Login helm to OCI registry
-        run: helm registry login ghcr.io -u build_bot -p "${{ secrets.GITHUB_TOKEN }}"
+        run: helm registry login ghcr.io -u build_bot -p "{{`${{ secrets.GITHUB_TOKEN }}`}}"
       - name: Run GoReleaser for tag build
         uses: goreleaser/goreleaser-action@5742e2a039330cbb23ebf35f046f814d4c6ff811 # v5.1.0
         if: startsWith(github.ref, 'refs/tags/')
@@ -79,28 +79,28 @@ jobs:
           version: "~> v2"
           args: release
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: {{`${{ secrets.GITHUB_TOKEN }}`}}
       - name: Snapshot build - run GoReleaser
         uses: goreleaser/goreleaser-action@5742e2a039330cbb23ebf35f046f814d4c6ff811 # v5.1.0
-        if: ${{ !startsWith(github.ref, 'refs/tags/') }}
+        if: {{`${{ !startsWith(github.ref, 'refs/tags/') }}`}}
         with:
           version: "~> v2"
           args: release --snapshot
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: {{`${{ secrets.GITHUB_TOKEN }}`}}
       - name: Snapshot build - upload docker images - prepare image list
-        if: ${{ !startsWith(github.ref, 'refs/tags/') }}
+        if: {{`${{ !startsWith(github.ref, 'refs/tags/') }}`}}
         run: jq -r '.[] | select(.type=="Docker Image" and (.name | contains(":latest") | not)) | .name' dist/artifacts.json | paste -sd ' ' /dev/stdin > images
       - name: Snapshot build - upload docker images - upload images
-        if: ${{ !startsWith(github.ref, 'refs/tags/') }}
+        if: {{`${{ !startsWith(github.ref, 'refs/tags/') }}`}}
         run: cat images | xargs -d ' ' -I{} -n1 sh -c "docker push {}"
       - name: Snapshot build - upload docker images - create manifests
-        if: ${{ !startsWith(github.ref, 'refs/tags/') }}
+        if: {{`${{ !startsWith(github.ref, 'refs/tags/') }}`}}
         run: |
-          docker manifest create ghcr.io/$(echo "$GITHUB_REPOSITORY" | awk '{print tolower($0)}'):$CURRENT_TAG $(cat images)
-          docker manifest push ghcr.io/$(echo "$GITHUB_REPOSITORY" | awk '{print tolower($0)}'):$CURRENT_TAG
+          docker manifest create ghcr.io/{{ lower .RegistryName }}/{{ lower .ImageName }}:$CURRENT_TAG $(cat images)
+          docker manifest push ghcr.io/{{ lower .RegistryName }}/{{ lower .ImageName }}:$CURRENT_TAG
       - name: Snapshot build - set helm chart versions
-        if: ${{ !startsWith(github.ref, 'refs/tags/') }}
+        if: {{`${{ !startsWith(github.ref, 'refs/tags/') }}`}}
         run: |
           yq -i "(.version = env(CURRENT_TAG)) | (.appVersion = env(CURRENT_TAG))" helm/Chart.yaml
           yq -i "(.replace-chart-version-with-git = false) | (.replace-app-version-with-git = false)" .abs/main.yaml
@@ -121,11 +121,11 @@ jobs:
       - name: Check detected version
         run: '[ -z "${CHART_FILE}" ] && exit 1 || echo "CHART_FILE=${CHART_FILE}"; [ -z "${CHART_VERSION}" ] && exit 1 || echo "CHART_VERSION=${CHART_VERSION}"'
       - name: Push the helm chart to registry
-        run: set -o pipefail && helm push "${CHART_FILE}" "oci://ghcr.io/demotechinc/charts" 2>&1 | tee /tmp/helm-push.log
+        run: set -o pipefail && helm push "${CHART_FILE}" "oci://ghcr.io/{{ .RegistryName }}/charts" 2>&1 | tee /tmp/helm-push.log
       - name: Capture the helm chart SHA256
         run: >-
           echo "CHART_SHA256=$(
             awk -F" " '/^Digest:/ {print $2}' /tmp/helm-push.log
           )" >> "$GITHUB_ENV"
       - name: Sign the helm chart
-        run: cosign sign --upload=true -y "ghcr.io/$(echo $GITHUB_REPOSITORY_OWNER | awk '{print tolower($0)}')/charts/$(echo $GITHUB_REPOSITORY | awk -F "/" '{print tolower($NF)}')@${CHART_SHA256}"
+        run: cosign sign --upload=true -y "ghcr.io/{{ lower .RegistryName }}/charts/{{ lower .ImageName }}@${CHART_SHA256}"

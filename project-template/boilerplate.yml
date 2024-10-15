@@ -1,0 +1,62 @@
+variables:
+  - name: ProjectName
+    type: string
+    validations:
+      - required
+
+  - name: RepoOwner
+    type: string
+    validations:
+      - required
+
+  - name: ImageName
+    type: string
+    default: "{{ .ProjectName }}"
+    validations:
+      - required
+
+  - name: RegistryDomain
+    type: string
+    validations:
+      - required
+      - url
+
+  - name: RegistryName
+    type: string
+    validations:
+      - required
+
+  - name: BackstageEntityOwner
+    type: string
+    validations:
+      - required
+
+  - name: BackstageEntityLifecycle
+    type: string
+    validations:
+      - required
+
+skip_files:
+  # paths to be copied directly, with no rendering
+  - path: helm/README.md.gotmpl
+  - path: helm/templates
+  - path: helm/templates/**/**
+  - path: templates
+  - path: templates/**/**
+
+hooks:
+  after:
+    - command: cp
+      args:
+        - helm/README.md.gotmpl
+        - "{{ outputFolder }}/helm/"
+    - command: cp
+      args:
+        - -a
+        - helm/templates/
+        - "{{ outputFolder }}/helm/"
+    - command: cp
+      args:
+        - -a
+        - templates/
+        - "{{ outputFolder }}/"

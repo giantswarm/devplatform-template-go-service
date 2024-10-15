@@ -1,0 +1,7 @@
+ProjectName: demo-album-catalog
+RepoOwner: giantswarm
+ImageName: demo-album-catalog
+RegistryDomain: ghcr.io
+RegistryName: giantswarm
+BackstageEntityOwner: giantswarm
+BackstageEntityLifecycle: experimental
