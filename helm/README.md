@@ -15,7 +15,7 @@ Kubernetes: `>=1.25.0`
 Use the values below to configure the chart's values.
 | Key | Type | Default | Description |
 |-----|------|---------|-------------|
-| autoscaling.enabled | bool | `true` | Turn on Pod replicas number autoscaling instead of setting a constant value. your cluster must support [Horizontal Pod Autoscaling](https://kubernetes.io/docs/tasks/run-application/horizontal-pod-autoscale/). |
+| autoscaling.enabled | bool | `true` | Turn on Pod replicas number autoscaling instead of setting a constant value. your cluster must support [ Horizontal Pod Autoscaling ](https://kubernetes.io/docs/tasks/run-application/horizontal-pod-autoscale/). |
 | autoscaling.maxReplicas | int | `10` | Max number of Pods autoscaler can deploy. |
 | autoscaling.minReplicas | int | `3` | Min number of Pods autoscaler can deploy. |
 | autoscaling.targetCPUUtilizationPercentage | int | `80` | Pod scale up critieria based on CPU usage. |
@@ -26,7 +26,7 @@ Use the values below to configure the chart's values.
 | fullnameOverride | string | `""` | Override the default name generated for this specific chart Release. |
 | ginMode | string | `"debug"` | Configure run mode of the gin web framework; can be 'debug' or 'production' |
 | image.pullPolicy | string | `"IfNotPresent"` | Configure image pull policy. |
-| image.registry | string | `"gsoci.azurecr.io"` | Set the domain of your container images registry. |
+| image.registry | string | `"ghcr.io"` | Set the domain of your container images registry. |
 | image.repository | string | `"giantswarm/demo-album-catalog"` | Set the name of the repository within the registry. |
 | image.tag | string | `""` | Image tag to use, defaults to .Chart.AppVersion |
 | imagePullSecrets | list | `[]` | Configure login secrets for the container images registry. |
@@ -48,13 +48,14 @@ Use the values below to configure the chart's values.
 | resources | object | `{"limits":{"cpu":"500m","memory":"512Mi"},"requests":{"cpu":"100m","memory":"128Mi"}}` | Configure [Pod resources](https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/). |
 | service.annotations | object | `{}` | Optional annotations for the Service definition. If your cluster has "ExternalDNS" operator running, you can use "external-dns.alpha.kubernetes.io/hostname" annotation to [automatically register DNS name for your service](https://github.com/kubernetes-sigs/external-dns). |
 | service.port | int | `80` | TCP port that the service will be exposed on. |
-| service.type | string | `"ClusterIP"` | The type of [Service](https://kubernetes.io/docs/concepts/services-networking/service/#publishing-services-service-types). |
+| service.type | string | `"ClusterIP"` | The type of [ Service ](https://kubernetes.io/docs/concepts/services-networking/service/#publishing-services-service-types). |
 | serviceAccount.annotations | object | `{}` | Annotations to add to the service account. |
 | serviceAccount.create | bool | `true` | Specifies whether a service account should be created. |
 | serviceAccount.name | string | `""` | The name of the service account to use. If not set and create is true, a name is generated using the fullname template |
 
 ## Maintainers
 
-| Name           | Email                 | Url |
-| -------------- | --------------------- | --- |
-| giantswarm | <noemail@nothing.com> |     |
+| Name | Email | Url |
+| ---- | ------ | --- |
+| giantswarm | <noemail@nothing.com> |  |
+
