@@ -97,8 +97,8 @@ jobs:
       - name: Snapshot build - upload docker images - create manifests
         if: {{`${{ !startsWith(github.ref, 'refs/tags/') }}`}}
         run: |
-          docker manifest create ghcr.io/$(echo "$GITHUB_REPOSITORY" | awk '{print tolower($0)}'):$CURRENT_TAG $(cat images)
-          docker manifest push ghcr.io/$(echo "$GITHUB_REPOSITORY" | awk '{print tolower($0)}'):$CURRENT_TAG
+          docker manifest create ghcr.io/{{ .ImageName }}:$CURRENT_TAG $(cat images)
+          docker manifest push ghcr.io/{{ .ImageName }}:$CURRENT_TAG
       - name: Snapshot build - set helm chart versions
         if: {{`${{ !startsWith(github.ref, 'refs/tags/') }}`}}
         run: |
@@ -128,4 +128,4 @@ jobs:
             awk -F" " '/^Digest:/ {print $2}' /tmp/helm-push.log
           )" >> "$GITHUB_ENV"
       - name: Sign the helm chart
-        run: cosign sign --upload=true -y "ghcr.io/$(echo $GITHUB_REPOSITORY_OWNER | awk '{print tolower($0)}')/charts/$(echo $GITHUB_REPOSITORY | awk -F "/" '{print tolower($NF)}')@${CHART_SHA256}"
+        run: cosign sign --upload=true -y "ghcr.io/{{ .RepoOwner | ToLower }}/charts/{{ .ImageName | ToLower }}@${CHART_SHA256}"
