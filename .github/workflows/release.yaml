@@ -77,7 +77,7 @@ jobs:
       - name: Login helm to OCI registry
         run: helm registry login ghcr.io -u build_bot -p "${{ secrets.GITHUB_TOKEN }}"
       - name: Run build with pack
-        run: pack build ghcr.io/giantswarm/demo-album-catalog/devplatform-template-go-service:${CURRENT_TAG} --path . --builder paketobuildpacks/builder-jammy-tiny --publish --trust-builder --sbom-output-dir sbom/ --cache-image
+        run: pack build ghcr.io/giantswarm/demo-album-catalog/devplatform-template-go-service:${CURRENT_TAG} --path . --builder paketobuildpacks/builder-jammy-tiny --publish --trust-builder --sbom-output-dir sbom/
       - name: Upload docker images - upload images
         run: docker push ghcr.io/giantswarm/demo-album-catalog/devplatform-template-go-service:${CURRENT_TAG}
       #      - name: Snapshot build - upload docker images - create manifests
