@@ -4,6 +4,8 @@ on:
   push:
     tags:
       - "*"
+    branches:
+      - "build-with-cnbp"
   pull_request:
   workflow_dispatch: {}
 
