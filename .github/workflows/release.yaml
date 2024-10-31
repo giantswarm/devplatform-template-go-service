@@ -86,8 +86,9 @@ jobs:
           oras discover ghcr.io/giantswarm/devplatform-template-go-service:${CURRENT_TAG} --format json | tee /tmp/oras.json
       - name: Sign docker image with cosign
         run: cosign sign --upload=true -y "$(head -n1 /tmp/oras.log)"
+      - run: jq -r '.manifests[0].digest' /tmp/oras.json
       - name: Sign SBOM with cosign
-        run: cosign sign --upload=true -y "ghcr.io/giantswarm/devplatform-template-go-service:$(jq -r '.manifests.[0].digest' /tmp/oras.json)"
+        run: cosign sign --upload=true -y "ghcr.io/giantswarm/devplatform-template-go-service:$(jq -r '.manifests[0].digest' /tmp/oras.json)"
       #      - name: Snapshot build - set helm chart versions
       #        if: ${{ !startsWith(github.ref, 'refs/tags/') }}
       #        run: |
