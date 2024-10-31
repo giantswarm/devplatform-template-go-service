@@ -26,6 +26,8 @@ jobs:
           fetch-depth: 0
       - name: Checkout - force fetch tags
         run: git fetch --force --tags
+      - name: Install tools
+        run: sudo apt-get install -y --no-install-recommends python3-semver jq
       - name: Tagged build - generate tag
         if: startsWith(github.ref, 'refs/tags/')
         run: |
@@ -33,7 +35,6 @@ jobs:
       - name: Snapshot build - generate tag
         if: ${{ !startsWith(github.ref, 'refs/tags/') }}
         run: |
-          sudo apt-get install -y --no-install-recommends python3-semver
           export NEXT_TAG=$(pysemver nextver $(git describe --tags --abbrev=0 2>/dev/null || echo "0.0.0") patch)
           echo "CURRENT_TAG=${NEXT_TAG}-$(git describe --tags | awk -F '-' '{print "dev."$2"."$3}')" >> $GITHUB_ENV
       - name: Generate tag - print the tag
@@ -77,16 +78,14 @@ jobs:
           --cache-image ghcr.io/giantswarm/pack-cache/devplatform-template-go-service
           # --env "BP_GO_BUILD_LDFLAGS=\"-X main.builtBy=pack -X main.version=${CURRENT_TAG} -X main.commit=$(git rev-parse @) -X main.date=$(date)\"" \
       - run: ls -laR sbom/
-      - name: Sign docker image with cosign
-        run: cosign sign --upload=true -y "ghcr.io/giantswarm/devplatform-template-go-service:${CURRENT_TAG}"
       - name: Attach SBOM to the image
         run: oras attach ghcr.io/giantswarm/devplatform-template-go-service:${CURRENT_TAG} sbom/launch/paketo-buildpacks_go-build/targets/sbom.spdx.json --artifact-type 'application/spdx+json'
       - name: Check SBOM
         run: |
-          oras discover ghcr.io/giantswarm/devplatform-template-go-service:${CURRENT_TAG} --format tree
+          oras discover ghcr.io/giantswarm/devplatform-template-go-service:${CURRENT_TAG} --format tree | tee /tmp/oras.log
           oras discover ghcr.io/giantswarm/devplatform-template-go-service:${CURRENT_TAG} --format json | tee /tmp/oras.json
-      - run: jq --version
-      - run: jq -r '.manifests.[0].digest' /tmp/oras.json
+      - name: Sign docker image with cosign
+        run: cosign sign --upload=true -y "$(head -n1 /tmp/oras.log)"
       - name: Sign SBOM with cosign
         run: cosign sign --upload=true -y "ghcr.io/giantswarm/devplatform-template-go-service:$(jq -r '.manifests.[0].digest' /tmp/oras.json)"
       #      - name: Snapshot build - set helm chart versions
