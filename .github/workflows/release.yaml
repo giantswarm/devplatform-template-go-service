@@ -73,9 +73,9 @@ jobs:
           --sbom-output-dir sbom/ \
           --publish \
           --cache-image ghcr.io/giantswarm/devplatform-template-go-service-build:cache
-      - run: ls -la sbom/
+      - run: ls -laR sbom/
       - name: Sign docker image with cosign
-        run: cosign sign ghcr.io/giantswarm/devplatform-template-go-service-build:${CURRENT_TAG}
+        run: cosign sign --upload=true -y "ghcr.io/giantswarm/devplatform-template-go-service:${CURRENT_TAG}"
 
       #      - name: Snapshot build - set helm chart versions
       #        if: ${{ !startsWith(github.ref, 'refs/tags/') }}
