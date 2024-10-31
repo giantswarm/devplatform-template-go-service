@@ -82,7 +82,8 @@ jobs:
           --path .\
           --trust-builder\
           --sbom-output-dir sbom/\
-          -- publish
+          --builder "paketobuildpacks/builder-jammy-tiny"\
+          --publish
       #- name: Upload docker images - upload images
       #  run: docker push ghcr.io/giantswarm/devplatform-template-go-service:${CURRENT_TAG}
       #      - name: Snapshot build - upload docker images - create manifests
