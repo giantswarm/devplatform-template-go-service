@@ -79,7 +79,7 @@ jobs:
       - name: Attach SBOM to the image
         run: oras attach ghcr.io/giantswarm/devplatform-template-go-service:${CURRENT_TAG} sbom/launch/paketo-buildpacks_go-build/targets/sbom.spdx.json --artifact-type 'application/spdx+json'
       - name: Check SBOM
-        run: oras discover ghcr.io/giantswarm/devplatform-template-go-service:${CURRENT_TAG} -o tree
+        run: oras discover ghcr.io/giantswarm/devplatform-template-go-service:${CURRENT_TAG} --format json | tee /tmp/oras.log
 
       #      - name: Snapshot build - set helm chart versions
       #        if: ${{ !startsWith(github.ref, 'refs/tags/') }}
