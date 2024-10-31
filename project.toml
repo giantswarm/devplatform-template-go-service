@@ -12,6 +12,10 @@ name = "BP_GO_BUILD_LDFLAGS"
 value = "-X main.builtBy=CNBP"
 
 [[io.buildpacks.build.env]]
+name = "BP_GO_BUILD_LDFLAGS"
+value = "-X main.date=2024"
+
+[[io.buildpacks.build.env]]
 name = "BP_IMAGE_LABELS"
 value = 'org.opencontainers.image.source=https://github.com/giantswarm/devplatform-template-go-service'
 

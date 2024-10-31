@@ -71,11 +71,11 @@ jobs:
         run: |
           pack build ghcr.io/giantswarm/devplatform-template-go-service:${CURRENT_TAG} \
           --path . \
-          --env "BP_GO_BUILD_LDFLAGS=\"-X main.builtBy=pack -X main.version=${CURRENT_TAG} -X main.commit=$(git rev-parse @) -X main.date=$(date)\"" \
           --trust-builder \
           --sbom-output-dir sbom/ \
           --publish \
           --cache-image ghcr.io/giantswarm/pack-cache/devplatform-template-go-service
+          # --env "BP_GO_BUILD_LDFLAGS=\"-X main.builtBy=pack -X main.version=${CURRENT_TAG} -X main.commit=$(git rev-parse @) -X main.date=$(date)\"" \
       - run: ls -laR sbom/
       - name: Sign docker image with cosign
         run: cosign sign --upload=true -y "ghcr.io/giantswarm/devplatform-template-go-service:${CURRENT_TAG}"
