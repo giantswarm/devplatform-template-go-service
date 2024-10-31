@@ -66,12 +66,12 @@ jobs:
       - name: Login helm to OCI registry
         run: helm registry login ghcr.io -u build_bot -p "${{ secrets.GITHUB_TOKEN }}"
       - name: Set extra build time env vars
-        run: echo -en "BP_GO_BUILD_LDFLAGS=\"-X main.builtBy=pack -X main.version=${CURRENT_TAG} -X main.commit=${REVISION} -X main.date=$(date)\"" | tee ./envfile
+        run: echo -en "BP_GO_BUILD_LDFLAGS=\"-X main.builtBy=pack -X main.version=${CURRENT_TAG} -X main.commit=$(git rev-parse @) -X main.date=$(date)\"" | tee ./envfile
       - name: Run build with pack
         run: |
           pack build ghcr.io/giantswarm/devplatform-template-go-service:${CURRENT_TAG} \
           --path . \
-          --env-file ./envfile \
+          --env "BP_GO_BUILD_LDFLAGS=\"-X main.builtBy=pack -X main.version=${CURRENT_TAG} -X main.commit=$(git rev-parse @) -X main.date=$(date)\"" \
           --trust-builder \
           --sbom-output-dir sbom/ \
           --publish \
