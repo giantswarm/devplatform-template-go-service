@@ -82,9 +82,9 @@ jobs:
           --path . \
           --trust-builder \
           --sbom-output-dir sbom/ \
-          --builder "paketobuildpacks/builder-jammy-tiny" \
           --publish \
-          --cache-image ghcr.io/giantswarm/devplatform-template-go-service-build-cache
+          --cache-image ghcr.io/giantswarm/devplatform-template-go-service-build:cache
+          # --builder "paketobuildpacks/builder-jammy-tiny" \
       #- name: Upload docker images - upload images
       #  run: docker push ghcr.io/giantswarm/devplatform-template-go-service:${CURRENT_TAG}
       #      - name: Snapshot build - upload docker images - create manifests
