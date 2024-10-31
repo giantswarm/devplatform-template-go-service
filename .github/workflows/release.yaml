@@ -86,6 +86,7 @@ jobs:
           oras discover ghcr.io/giantswarm/devplatform-template-go-service:${CURRENT_TAG} --format tree
           oras discover ghcr.io/giantswarm/devplatform-template-go-service:${CURRENT_TAG} --format json | tee /tmp/oras.json
       - run: jq --version
+      - run: jq -r '.manifests.[0].digest' /tmp/oras.json
       - name: Sign SBOM with cosign
         run: cosign sign --upload=true -y "ghcr.io/giantswarm/devplatform-template-go-service:$(jq -r '.manifests.[0].digest' /tmp/oras.json)"
       #      - name: Snapshot build - set helm chart versions
