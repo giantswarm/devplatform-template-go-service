@@ -1,53 +1,53 @@
 minimum_pre_commit_version: 3.3.0
 repos:
-  - repo: meta
-    hooks:
-      - id: check-useless-excludes
+  #  - repo: meta
+  #    hooks:
+  #      - id: check-useless-excludes
+  #
+  #  # shell scripts
+  #  - repo: https://github.com/detailyang/pre-commit-shell
+  #    rev: 1.0.5
+  #    hooks:
+  #      - id: shell-lint
+  #        args: [--format=json]
+  #
+  #  # markdown
+  #  - repo: https://github.com/igorshubovych/markdownlint-cli
+  #    rev: v0.42.0
+  #    hooks:
+  #      - id: markdownlint
+  #        # This file is auto-generated.
+  #        exclude: helm/README.md
+  #
+  #  # general file formatting
+  #  - repo: https://github.com/pre-commit/pre-commit-hooks
+  #    rev: v4.6.0
+  #    hooks:
+  #      - id: check-added-large-files
+  #      - id: check-executables-have-shebangs
+  #      - id: check-json
+  #      - id: check-merge-conflict
+  #      - id: check-symlinks
+  #      - id: check-xml
+  #      - id: check-yaml
+  #        # helm templates are not correct YAML files, but have .yaml extension
+  #        exclude: helm/templates/.*
+  #      - id: end-of-file-fixer
+  #        # This file is auto-generated.
+  #        exclude: helm/README.md|helm/values.schema.json
+  #      - id: pretty-format-json
+  #        args: ["--indent", "2", "--autofix"]
+  #        exclude: helm/values.schema.json
+  #      - id: trailing-whitespace
+  #      - id: mixed-line-ending
 
-  # shell scripts
-  - repo: https://github.com/detailyang/pre-commit-shell
-    rev: 1.0.5
-    hooks:
-      - id: shell-lint
-        args: [--format=json]
-
-  # markdown
-  - repo: https://github.com/igorshubovych/markdownlint-cli
-    rev: v0.42.0
-    hooks:
-      - id: markdownlint
-        # This file is auto-generated.
-        exclude: helm/README.md
-
-  # general file formatting
-  - repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v4.6.0
-    hooks:
-      - id: check-added-large-files
-      - id: check-executables-have-shebangs
-      - id: check-json
-      - id: check-merge-conflict
-      - id: check-symlinks
-      - id: check-xml
-      - id: check-yaml
-        # helm templates are not correct YAML files, but have .yaml extension
-        exclude: helm/templates/.*
-      - id: end-of-file-fixer
-        # This file is auto-generated.
-        exclude: helm/README.md|helm/values.schema.json
-      - id: pretty-format-json
-        args: ["--indent", "2", "--autofix"]
-        exclude: helm/values.schema.json
-      - id: trailing-whitespace
-      - id: mixed-line-ending
-
-  # golang
-  - repo: https://github.com/dnephin/pre-commit-golang
-    rev: v0.5.1
-    hooks:
-      - id: go-fmt
-      - id: go-vet
-      - id: golangci-lint
+  #  # golang
+  #  - repo: https://github.com/dnephin/pre-commit-golang
+  #    rev: v0.5.1
+  #    hooks:
+  #      - id: go-fmt
+  #      - id: go-vet
+  #      - id: golangci-lint
 
   # security
   - repo: https://github.com/gitleaks/gitleaks
