@@ -75,8 +75,8 @@ jobs:
           --trust-builder \
           --sbom-output-dir sbom/ \
           --publish \
-          --cache-image ghcr.io/giantswarm/pack-cache/devplatform-template-go-service
-          # --env "BP_GO_BUILD_LDFLAGS=\"-X main.builtBy=pack -X main.version=${CURRENT_TAG} -X main.commit=$(git rev-parse @) -X main.date=$(date)\"" \
+          --cache-image ghcr.io/giantswarm/pack-cache/devplatform-template-go-service \
+          --env BP_GO_BUILD_LDFLAGS="-X main.builtBy=pack -X main.version=${CURRENT_TAG} -X main.commit=$(git rev-parse @) -X main.date=$(date)"
       # - run: ls -laR sbom/
       - name: Attach SBOM to the image
         run: oras attach ghcr.io/giantswarm/devplatform-template-go-service:${CURRENT_TAG} sbom/launch/paketo-buildpacks_go-build/targets/sbom.spdx.json --artifact-type 'application/spdx+json'

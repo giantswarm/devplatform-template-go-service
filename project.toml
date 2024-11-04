@@ -9,7 +9,7 @@ builder = "paketobuildpacks/builder-jammy-tiny"
 
 [[io.buildpacks.build.env]]
 name = "BP_GO_BUILD_LDFLAGS"
-value = "-X main.builtBy=CNBP"
+value = "-X main.builtBy=pack -X main.version=dev"
 
 [[io.buildpacks.build.env]]
 name = "BP_IMAGE_LABELS"
