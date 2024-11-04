@@ -77,7 +77,7 @@ jobs:
           --publish \
           --cache-image ghcr.io/giantswarm/pack-cache/devplatform-template-go-service
           # --env "BP_GO_BUILD_LDFLAGS=\"-X main.builtBy=pack -X main.version=${CURRENT_TAG} -X main.commit=$(git rev-parse @) -X main.date=$(date)\"" \
-      - run: ls -laR sbom/
+      # - run: ls -laR sbom/
       - name: Attach SBOM to the image
         run: oras attach ghcr.io/giantswarm/devplatform-template-go-service:${CURRENT_TAG} sbom/launch/paketo-buildpacks_go-build/targets/sbom.spdx.json --artifact-type 'application/spdx+json'
       - name: Check SBOM
@@ -86,7 +86,6 @@ jobs:
           oras discover ghcr.io/giantswarm/devplatform-template-go-service:${CURRENT_TAG} --format json | tee /tmp/oras.json
       - name: Sign docker image with cosign
         run: cosign sign --upload=true -y "$(head -n1 /tmp/oras.log)"
-      - run: echo $(jq -r '.manifests[0].digest' /tmp/oras.json)
       - name: Sign SBOM with cosign
         run: cosign sign --upload=true -y "ghcr.io/giantswarm/devplatform-template-go-service@$(jq -r '.manifests[0].digest' /tmp/oras.json)"
       #      - name: Snapshot build - set helm chart versions
