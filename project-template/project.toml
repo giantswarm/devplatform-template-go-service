@@ -1,0 +1,20 @@
+[_]
+schema-version = "0.2"
+id = "giantswarm.devplatform.go-service"
+name = "go service built with CNBP"
+version = "0.1.0"
+
+[io.buildpacks]
+builder = "paketobuildpacks/builder-jammy-tiny"
+
+[[io.buildpacks.build.env]]
+name = "BP_GO_BUILD_LDFLAGS"
+value = "-X main.builtBy=pack -X main.version=dev"
+
+[[io.buildpacks.build.env]]
+name = "BP_IMAGE_LABELS"
+value = 'org.opencontainers.image.source=https://github.com/giantswarm/devplatform-template-go-service'
+
+[[io.buildpacks.build.env]]
+name = "BP_KEEP_FILES"
+value = "templates/*:templates/"
