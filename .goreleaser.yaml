@@ -1,8 +1,8 @@
 version: 2
-project_name: demo-album-catalog
+project_name: demo-album-catalog-pack
 builds:
   - <<: &build_defaults
-      binary: demo-album-catalog
+      binary: demo-album-catalog-pack
       main: main.go
       env:
         - CGO_ENABLED=0
@@ -25,8 +25,8 @@ archives:
 dockers:
   - image_templates:
 
-      - "ghcr.io/giantswarm/demo-album-catalog:{{ .Env.CURRENT_TAG }}-amd64"
-      - "ghcr.io/giantswarm/demo-album-catalog:latest-amd64"
+      - "ghcr.io/giantswarm/demo-album-catalog-pack:{{ .Env.CURRENT_TAG }}-amd64"
+      - "ghcr.io/giantswarm/demo-album-catalog-pack:latest-amd64"
 
     dockerfile: Dockerfile
     use: buildx
@@ -44,8 +44,8 @@ dockers:
       - "templates"
   - image_templates:
 
-      - "ghcr.io/giantswarm/demo-album-catalog:{{ .Env.CURRENT_TAG }}-arm64"
-      - "ghcr.io/giantswarm/demo-album-catalog:latest-arm64"
+      - "ghcr.io/giantswarm/demo-album-catalog-pack:{{ .Env.CURRENT_TAG }}-arm64"
+      - "ghcr.io/giantswarm/demo-album-catalog-pack:latest-arm64"
 
     dockerfile: Dockerfile
     use: buildx
@@ -63,14 +63,14 @@ dockers:
       - "templates"
 docker_manifests:
 
-  - name_template: "ghcr.io/giantswarm/demo-album-catalog:{{ .Env.CURRENT_TAG }}"
+  - name_template: "ghcr.io/giantswarm/demo-album-catalog-pack:{{ .Env.CURRENT_TAG }}"
     image_templates:
-      - "ghcr.io/giantswarm/demo-album-catalog:{{ .Env.CURRENT_TAG }}-amd64"
-      - "ghcr.io/giantswarm/demo-album-catalog:{{ .Env.CURRENT_TAG }}-arm64"
-  - name_template: "ghcr.io/giantswarm/demo-album-catalog:latest"
+      - "ghcr.io/giantswarm/demo-album-catalog-pack:{{ .Env.CURRENT_TAG }}-amd64"
+      - "ghcr.io/giantswarm/demo-album-catalog-pack:{{ .Env.CURRENT_TAG }}-arm64"
+  - name_template: "ghcr.io/giantswarm/demo-album-catalog-pack:latest"
     image_templates:
-      - "ghcr.io/giantswarm/demo-album-catalog:latest-amd64"
-      - "ghcr.io/giantswarm/demo-album-catalog:latest-arm64"
+      - "ghcr.io/giantswarm/demo-album-catalog-pack:latest-amd64"
+      - "ghcr.io/giantswarm/demo-album-catalog-pack:latest-arm64"
 
 docker_signs:
   - cmd: cosign
@@ -85,13 +85,13 @@ docker_signs:
 source:
   enabled: true
 
-  name_template: "demo-album-catalog_{{ .Env.CURRENT_TAG }}_src"
+  name_template: "demo-album-catalog-pack_{{ .Env.CURRENT_TAG }}_src"
 sboms:
   - artifacts: archive
   - id: source
     artifacts: source
     documents:
-      - "demo-album-catalog_{{ .Env.CURRENT_TAG }}_sbom.spdx.json"
+      - "demo-album-catalog-pack_{{ .Env.CURRENT_TAG }}_sbom.spdx.json"
 
 release: {}
 checksum: {}
