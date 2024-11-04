@@ -11,9 +11,7 @@ the CI.
 
 ## Features included
 
-- automatically build go binaries, a container image and a Helm chart
-- upload build artifacts to GitHub: create a release for the binaries, upload the container image and the Helm chart
-  to GitHub's OCI registry
+- automatically build go binaries, a container image and a Helm chart to GitHub's OCI registry
 - included security: vulnerability scans for go sources, generation of SBoM, singing artifacts with `cosign`
 - included automated dependency updates based on [renovate](renovatebot.com)
 - included linting and validation for multiple types of artifacts, including golang, markdown, Kubernetes objects, ...
