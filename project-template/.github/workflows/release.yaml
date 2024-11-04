@@ -4,20 +4,18 @@ on:
   push:
     tags:
       - "*"
-    branches:
-      - "build-with-cnbp"
   pull_request:
   workflow_dispatch: {}
 
 jobs:
-  # validate-and-test:
-  # uses: "./.github/workflows/validate-test.yaml"
+  validate-and-test:
+    uses: "./.github/workflows/validate-test.yaml"
   release-binary-and-image:
     permissions:
       contents: write # needed to write releases
       id-token: write # needed for keyless signing
       packages: write # needed for ghcr access
-    # needs: [validate-and-test]
+    needs: [validate-and-test]
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -33,7 +31,7 @@ jobs:
         run: |
           echo "CURRENT_TAG=$GITHUB_REF_NAME" >> $GITHUB_ENV
       - name: Snapshot build - generate tag
-        if: ${{ !startsWith(github.ref, 'refs/tags/') }}
+        if: {{`${{ !startsWith(github.ref, 'refs/tags/') }}`}}
         run: |
           export NEXT_TAG=$(pysemver nextver $(git describe --tags --abbrev=0 2>/dev/null || echo "0.0.0") patch)
           echo "CURRENT_TAG=${NEXT_TAG}-$(git describe --tags | awk -F '-' '{print "dev."$2"."$3}')" >> $GITHUB_ENV
@@ -61,60 +59,56 @@ jobs:
       - name: Login to GitHub Container Registry
         uses: docker/login-action@9780b0c442fbb1117ed29e0efdff1e18412f7567 # v3.3.0
         with:
-          registry: ghcr.io
+          registry: {{ RegistryDomain }}
           username: build_bot
-          password: ${{ secrets.GITHUB_TOKEN }}
+          password: {{`${{ secrets.GITHUB_TOKEN }}`}}
       - name: Login helm to OCI registry
-        run: helm registry login ghcr.io -u build_bot -p "${{ secrets.GITHUB_TOKEN }}"
-      - name: Set extra build time env vars
-        run: echo -en "BP_GO_BUILD_LDFLAGS=\"-X main.builtBy=pack -X main.version=${CURRENT_TAG} -X main.commit=$(git rev-parse @) -X main.date=$(date)\"" | tee ./envfile
+        run: helm registry login {{ RegistryDomain }} -u build_bot -p "{{`${{ secrets.GITHUB_TOKEN }}`}}"
       - name: Run build with pack
         run: |
-          pack build ghcr.io/giantswarm/devplatform-template-go-service:${CURRENT_TAG} \
+          pack build {{ lower RegistryDomain }}/{{ lower RegistryName }}/{{ lower ImageName }}:${CURRENT_TAG} \
           --path . \
           --trust-builder \
           --sbom-output-dir sbom/ \
           --publish \
-          --cache-image ghcr.io/giantswarm/pack-cache/devplatform-template-go-service \
+          --cache-image {{ lower RegistryDomain }}/{{ lower RegistryName }}/pack-cache/{{ lower ImageName }} \
           --env BP_GO_BUILD_LDFLAGS="-X main.builtBy=pack -X main.version=${CURRENT_TAG} -X main.commit=$(git rev-parse @) -X main.date=$(date --iso-8601=seconds)"
-      # - run: ls -laR sbom/
       - name: Attach SBOM to the image
-        run: oras attach ghcr.io/giantswarm/devplatform-template-go-service:${CURRENT_TAG} sbom/launch/paketo-buildpacks_go-build/targets/sbom.spdx.json --artifact-type 'application/spdx+json'
+        run: oras attach {{ lower RegistryDomain }}/{{ lower RegistryName }}/{{ lower ImageName }}:${CURRENT_TAG} sbom/launch/paketo-buildpacks_go-build/targets/sbom.spdx.json --artifact-type 'application/spdx+json'
       - name: Check SBOM
         run: |
-          oras discover ghcr.io/giantswarm/devplatform-template-go-service:${CURRENT_TAG} --format tree | tee /tmp/oras.log
-          oras discover ghcr.io/giantswarm/devplatform-template-go-service:${CURRENT_TAG} --format json | tee /tmp/oras.json
+          oras discover {{ lower RegistryDomain }}/{{ lower RegistryName }}/{{ lower ImageName }}:${CURRENT_TAG} --format tree | tee /tmp/oras.log
+          oras discover {{ lower RegistryDomain }}/{{ lower RegistryName }}/{{ lower ImageName }}:${CURRENT_TAG} --format json | tee /tmp/oras.json
       - name: Sign docker image with cosign
         run: cosign sign --upload=true -y "$(head -n1 /tmp/oras.log)"
       - name: Sign SBOM with cosign
-        run: cosign sign --upload=true -y "ghcr.io/giantswarm/devplatform-template-go-service@$(jq -r '.manifests[0].digest' /tmp/oras.json)"
-      #      - name: Snapshot build - set helm chart versions
-      #        if: ${{ !startsWith(github.ref, 'refs/tags/') }}
-      #        run: |
-      #          yq -i "(.version = env(CURRENT_TAG)) | (.appVersion = env(CURRENT_TAG))" helm/Chart.yaml
-      #          yq -i "(.replace-chart-version-with-git = false) | (.replace-app-version-with-git = false)" .abs/main.yaml
-      #      - name: Run app-build-suite to build the helm chart
-      #        run: |
-      #          yq -i ".image.tag = env(CURRENT_TAG)" helm/values.yaml
-      #          set -o pipefail && /tmp/dabs.sh -c helm 2>&1 | tee /tmp/abs.log
-      #      - name: Capture the helm chart name
-      #        run: >-
-      #          echo "CHART_FILE=$(
-      #            awk -F":" '/packaged chart and saved it to/ {gsub(/ /, ""); print $2}' /tmp/abs.log
-      #          )" >> "$GITHUB_ENV"
-      #      - name: Capture the helm chart version
-      #        run: >-
-      #          echo "CHART_VERSION=$(
-      #            awk -F"[:,]" '/=> \(version/ {gsub(/[ "]/, ""); print $2; exit }' /tmp/abs.log
-      #          )" >> "$GITHUB_ENV"
-      #      - name: Check detected version
-      #        run: '[ -z "${CHART_FILE}" ] && exit 1 || echo "CHART_FILE=${CHART_FILE}"; [ -z "${CHART_VERSION}" ] && exit 1 || echo "CHART_VERSION=${CHART_VERSION}"'
-      #      - name: Push the helm chart to registry
-      #        run: set -o pipefail && helm push "${CHART_FILE}" "oci://ghcr.io/giantswarm/charts" 2>&1 | tee /tmp/helm-push.log
-      #      - name: Capture the helm chart SHA256
-      #        run: >-
-      #          echo "CHART_SHA256=$(
-      #            awk -F" " '/^Digest:/ {print $2}' /tmp/helm-push.log
-      #          )" >> "$GITHUB_ENV"
-      #      - name: Sign the helm chart
-      #        run: cosign sign --upload=true -y "ghcr.io/giantswarm/charts/demo-album-catalog@${CHART_SHA256}"
+        run: cosign sign --upload=true -y "{{ lower RegistryDomain }}/{{ lower RegistryName }}/{{ lower ImageName }}@$(jq -r '.manifests[0].digest' /tmp/oras.json)"
+      - name: Set helm chart versions
+        run: |
+          yq -i "(.version = env(CURRENT_TAG)) | (.appVersion = env(CURRENT_TAG))" helm/Chart.yaml
+          yq -i "(.replace-chart-version-with-git = false) | (.replace-app-version-with-git = false)" .abs/main.yaml
+      - name: Run app-build-suite to build the helm chart
+        run: |
+          yq -i ".image.tag = env(CURRENT_TAG)" helm/values.yaml
+          set -o pipefail && /tmp/dabs.sh -c helm 2>&1 | tee /tmp/abs.log
+      - name: Capture the helm chart name
+        run: >-
+          echo "CHART_FILE=$(
+            awk -F":" '/packaged chart and saved it to/ {gsub(/ /, ""); print $2}' /tmp/abs.log
+          )" >> "$GITHUB_ENV"
+      - name: Capture the helm chart version
+        run: >-
+          echo "CHART_VERSION=$(
+            awk -F"[:,]" '/=> \(version/ {gsub(/[ "]/, ""); print $2; exit }' /tmp/abs.log
+          )" >> "$GITHUB_ENV"
+      - name: Check detected version
+        run: '[ -z "${CHART_FILE}" ] && exit 1 || echo "CHART_FILE=${CHART_FILE}"; [ -z "${CHART_VERSION}" ] && exit 1 || echo "CHART_VERSION=${CHART_VERSION}"'
+      - name: Push the helm chart to registry
+        run: set -o pipefail && helm push "${CHART_FILE}" "oci://{{ lower RegistryDomain }}/{{ lower RegistryName }}/charts" 2>&1 | tee /tmp/helm-push.log
+      - name: Capture the helm chart SHA256
+        run: >-
+          echo "CHART_SHA256=$(
+            awk -F" " '/^Digest:/ {print $2}' /tmp/helm-push.log
+          )" >> "$GITHUB_ENV"
+      - name: Sign the helm chart
+        run: cosign sign --upload=true -y "{{ lower RegistryDomain }}/{{ lower RegistryName }}/charts/{{ lower ProjectName }}@${CHART_SHA256}"

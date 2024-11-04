@@ -7,10 +7,6 @@ on:
   pull_request:
   workflow_dispatch: {}
 
-# defaults:
-#   run:
-#     working-directory: rendered-project
-
 jobs:
   rendered-project:
     runs-on: ubuntu-latest
@@ -27,7 +23,7 @@ jobs:
       - name: Checkout rendered project branch
         uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4
         with:
-          ref: "rendered-project"
+          ref: "rendered-project-pack"
       - name: Run boilerplate
         run: boilerplate --non-interactive --template-url /tmp/project-template --output-folder . --var-file /tmp/boilerplate-values.yml
       - name: Install helm-docs
@@ -37,7 +33,7 @@ jobs:
           tag: v1.11.0
           cache: enable
       - name: Replace source repo info
-        run: sed -i 's/LABEL\ org\.opencontainers\.image\.source=https:\/\/github\.com\/giantswarm\/demo-album-catalog/LABEL\ org\.opencontainers\.image\.source=https:\/\/github\.com\/giantswarm\/devplatform-template-go-service/' Dockerfile
+        run: sed -i 's/org\.opencontainers\.image\.source=https:\/\/github\.com\/giantswarm\/demo-album-catalogpack/org\.opencontainers\.image\.source=https:\/\/github\.com\/giantswarm\/devplatform-template-go-service/' project.toml
       - name: Run pre-commit
         continue-on-error: true
         uses: pre-commit/action@2c7b3805fd2a0fd8c1884dcaebf91fc102a13ecd # v3.0.1
@@ -45,7 +41,7 @@ jobs:
         id: cpr
         uses: peter-evans/create-pull-request@v7
         with:
-          branch: "rendered-project-${{ github.head_ref }}"
+          branch: "rendered-project-pack-${{ github.head_ref }}"
           delete-branch: true
           token: ${{ secrets.WORKFLOW_PAT }}
       - name: Create comment when no change
