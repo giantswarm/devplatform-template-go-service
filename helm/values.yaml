@@ -1,5 +1,5 @@
 # yaml-language-server: $schema=values.schema.json
-# Default values for demo-album-catalog.
+# Default values for demo-album-catalog-pack.
 
 # -- Override the default name generated for the chart objects.
 nameOverride: ""
@@ -10,7 +10,7 @@ image:
   # -- Set the domain of your container images registry.
   registry: "ghcr.io"
   # -- Set the name of the repository within the registry.
-  repository: "giantswarm/demo-album-catalog"
+  repository: "giantswarm/demo-album-catalog-pack"
   # -- Configure image pull policy.
   pullPolicy: IfNotPresent
   # -- Image tag to use, defaults to .Chart.AppVersion
@@ -42,7 +42,7 @@ database:
   # and `password` keys. May contain `port` key.
   connectionSecretName: ""
   # -- Name of a logical database to use
-  name: "demo-album-catalog"
+  name: "demo-album-catalog-pack"
 # -- Secret that contains redis connection details. It has to be present in the
 # same namespace as the Chart is deployed to. Has to have `host`, `username`
 # and `password` keys. May contain `port` key.

@@ -1,6 +1,6 @@
-# demo-album-catalog
+# demo-album-catalog-pack
 
-![validation and test result](https://github.com/giantswarm/demo-album-catalog/actions/workflows/validate-test.yaml/badge.svg?event=push)
+![validation and test result](https://github.com/giantswarm/demo-album-catalog-pack/actions/workflows/validate-test.yaml/badge.svg?event=push)
 
 ## Intro
 

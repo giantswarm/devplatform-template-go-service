@@ -1,4 +1,4 @@
-module github.com/giantswarm/demo-album-catalog
+module github.com/giantswarm/demo-album-catalog-pack
 
 go 1.22.2
 

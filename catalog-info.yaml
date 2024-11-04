@@ -1,16 +1,16 @@
 apiVersion: backstage.io/v1alpha1
 kind: Component
 metadata:
-  name: demo-album-catalog
+  name: demo-album-catalog-pack
   description: A Golang service responding to HTTP requests.
   annotations:
-    backstage.io/kubernetes-id: demo-album-catalog
-    backstage.io/source-location: url:https://github.com/giantswarm/demo-album-catalog
-    backstage.io/techdocs-ref: url:https://github.com/giantswarm/demo-album-catalog/tree/main
-    giantswarm.io/deployment-names: demo-album-catalog,demo-album-catalog-app
-    giantswarm.io/ingress-host: "demo-album-catalog.demotech-rds.awsprod.gigantic.io"
+    backstage.io/kubernetes-id: demo-album-catalog-pack
+    backstage.io/source-location: url:https://github.com/giantswarm/demo-album-catalog-pack
+    backstage.io/techdocs-ref: url:https://github.com/giantswarm/demo-album-catalog-pack/tree/main
+    giantswarm.io/deployment-names: demo-album-catalog-pack,demo-album-catalog-pack-app
+    giantswarm.io/ingress-host: "demo-album-catalog-pack.demotech-rds.awsprod.gigantic.io"
     giantswarm.io/grafana-dashboard: "/d/cdyhcdr5hge0wa/demotech-web-application-vitals"
-    github.com/project-slug: giantswarm/demo-album-catalog
+    github.com/project-slug: giantswarm/demo-album-catalog-pack
 spec:
   type: service
   lifecycle: experimental

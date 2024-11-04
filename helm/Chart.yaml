@@ -1,9 +1,9 @@
 apiVersion: v2
-name: demo-album-catalog
+name: demo-album-catalog-pack
 description: A Helm chart to deploy the sample golang based web service project.
 type: application
 kubeVersion: ">=1.25.0"
-home: https://github.com/giantswarm/demo-album-catalog/
+home: https://github.com/giantswarm/demo-album-catalog-pack/
 maintainers:
   - name: giantswarm
     email: noemail@nothing.com

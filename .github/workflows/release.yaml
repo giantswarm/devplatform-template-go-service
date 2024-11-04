@@ -24,6 +24,8 @@ jobs:
           fetch-depth: 0
       - name: Checkout - force fetch tags
         run: git fetch --force --tags
+      - name: Install tools
+        run: sudo apt-get install -y --no-install-recommends python3-semver jq
       - name: Tagged build - generate tag
         if: startsWith(github.ref, 'refs/tags/')
         run: |
@@ -31,30 +33,20 @@ jobs:
       - name: Snapshot build - generate tag
         if: ${{ !startsWith(github.ref, 'refs/tags/') }}
         run: |
-          sudo apt-get install -y --no-install-recommends python3-semver
           export NEXT_TAG=$(pysemver nextver $(git describe --tags --abbrev=0 2>/dev/null || echo "0.0.0") patch)
           echo "CURRENT_TAG=${NEXT_TAG}-$(git describe --tags | awk -F '-' '{print "dev."$2"."$3}')" >> $GITHUB_ENV
       - name: Generate tag - print the tag
         run: |
           echo "CURRENT_TAG=$CURRENT_TAG"
-      - name: Setup Go
-        uses: actions/setup-go@0a12ed9d6a96ab950c8f026ed9f722fe0da7ef32 # v5.0.2
-        with:
-          go-version: 1.22.2
-          cache: true
-      - name: Setup QEMU
-        uses: docker/setup-qemu-action@49b3bc8e6bdd4a60e6116a5414239cba5943d3cf # v3.2.0
-        with:
-          platforms: "amd64,arm64"
-      - name: Setup Docker Buildx
-        id: buildx
-        uses: docker/setup-buildx-action@988b5a0280414f521da01fcc63a27aeeb4b104db # v3.6.1
-        with:
-          platforms: "linux/amd64,linux/arm64"
-      - name: Setup Syft
-        uses: anchore/sbom-action/download-syft@61119d458adab75f756bc0b9e4bde25725f86a7a # v0.17.2
+      - name: Setup pack
+        uses: buildpacks/github-actions/setup-pack@v5.0.0
       - name: Setup Cosign
         uses: sigstore/cosign-installer@4959ce089c160fddf62f7b42464195ba1a56d382 # v3.6.0
+      - name: Install oras
+        uses: jaxxstorm/action-install-gh-release@v1.10.0
+        with:
+          repo: oras-project/oras
+          cache: enable
       - name: Setup Helm
         run: |
           curl -L -sS -o helm-v3.16.1-linux-amd64.tar.gz https://get.helm.sh/helm-v3.16.1-linux-amd64.tar.gz
@@ -72,35 +64,26 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
       - name: Login helm to OCI registry
         run: helm registry login ghcr.io -u build_bot -p "${{ secrets.GITHUB_TOKEN }}"
-      - name: Run GoReleaser for tag build
-        uses: goreleaser/goreleaser-action@5742e2a039330cbb23ebf35f046f814d4c6ff811 # v5.1.0
-        if: startsWith(github.ref, 'refs/tags/')
-        with:
-          version: "~> v2.3"
-          args: release
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      - name: Snapshot build - run GoReleaser
-        uses: goreleaser/goreleaser-action@5742e2a039330cbb23ebf35f046f814d4c6ff811 # v5.1.0
-        if: ${{ !startsWith(github.ref, 'refs/tags/') }}
-        with:
-          version: "~> v2.3"
-          args: release --snapshot
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      - name: Snapshot build - upload docker images - prepare image list
-        if: ${{ !startsWith(github.ref, 'refs/tags/') }}
-        run: jq -r '.[] | select(.type=="Docker Image" and (.name | contains(":latest") | not)) | .name' dist/artifacts.json | paste -sd ' ' /dev/stdin > images
-      - name: Snapshot build - upload docker images - upload images
-        if: ${{ !startsWith(github.ref, 'refs/tags/') }}
-        run: cat images | xargs -d ' ' -I{} -n1 sh -c "docker push {}"
-      - name: Snapshot build - upload docker images - create manifests
-        if: ${{ !startsWith(github.ref, 'refs/tags/') }}
+      - name: Run build with pack
         run: |
-          docker manifest create ghcr.io/giantswarm/demo-album-catalog:$CURRENT_TAG $(cat images)
-          docker manifest push ghcr.io/giantswarm/demo-album-catalog:$CURRENT_TAG
-      - name: Snapshot build - set helm chart versions
-        if: ${{ !startsWith(github.ref, 'refs/tags/') }}
+          pack build ghcr.io/giantswarm/demo-album-catalog-pack:${CURRENT_TAG} \
+          --path . \
+          --trust-builder \
+          --sbom-output-dir sbom/ \
+          --publish \
+          --cache-image ghcr.io/giantswarm/pack-cache/demo-album-catalog-pack \
+          --env BP_GO_BUILD_LDFLAGS="-X main.builtBy=pack -X main.version=${CURRENT_TAG} -X main.commit=$(git rev-parse @) -X main.date=$(date --iso-8601=seconds)"
+      - name: Attach SBOM to the image
+        run: oras attach ghcr.io/giantswarm/demo-album-catalog-pack:${CURRENT_TAG} sbom/launch/paketo-buildpacks_go-build/targets/sbom.spdx.json --artifact-type 'application/spdx+json'
+      - name: Check SBOM
+        run: |
+          oras discover ghcr.io/giantswarm/demo-album-catalog-pack:${CURRENT_TAG} --format tree | tee /tmp/oras.log
+          oras discover ghcr.io/giantswarm/demo-album-catalog-pack:${CURRENT_TAG} --format json | tee /tmp/oras.json
+      - name: Sign docker image with cosign
+        run: cosign sign --upload=true -y "$(head -n1 /tmp/oras.log)"
+      - name: Sign SBOM with cosign
+        run: cosign sign --upload=true -y "ghcr.io/giantswarm/demo-album-catalog-pack@$(jq -r '.manifests[0].digest' /tmp/oras.json)"
+      - name: Set helm chart versions
         run: |
           yq -i "(.version = env(CURRENT_TAG)) | (.appVersion = env(CURRENT_TAG))" helm/Chart.yaml
           yq -i "(.replace-chart-version-with-git = false) | (.replace-app-version-with-git = false)" .abs/main.yaml
@@ -128,4 +111,4 @@ jobs:
             awk -F" " '/^Digest:/ {print $2}' /tmp/helm-push.log
           )" >> "$GITHUB_ENV"
       - name: Sign the helm chart
-        run: cosign sign --upload=true -y "ghcr.io/giantswarm/charts/demo-album-catalog@${CHART_SHA256}"
+        run: cosign sign --upload=true -y "ghcr.io/giantswarm/charts/demo-album-catalog-pack@${CHART_SHA256}"
