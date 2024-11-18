@@ -7,9 +7,8 @@ on:
   pull_request:
   workflow_dispatch: {}
 
-# defaults:
-#   run:
-#     working-directory: rendered-project
+env:
+  PRE_COMMIT_VERSION: "4.0.1"
 
 jobs:
   rendered-project:
@@ -19,6 +18,11 @@ jobs:
       pull-requests: write
       actions: write
     steps:
+      - uses: actions/create-github-app-token@v1
+        id: generate-token
+        with:
+          app-id: ${{ secrets.IDP_TOOLKIT_APP_ID }}
+          private-key: ${{ secrets.IDP_TOOLKIT_APP_KEY }}
       - uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4
       - name: Install boilerplate
         run: curl -fsSL https://github.com/gruntwork-io/boilerplate/releases/latest/download/boilerplate_linux_amd64 -o /usr/local/bin/boilerplate && chmod +x /usr/local/bin/boilerplate
@@ -31,23 +35,36 @@ jobs:
       - name: Run boilerplate
         run: boilerplate --non-interactive --template-url /tmp/project-template --output-folder . --var-file /tmp/boilerplate-values.yml
       - name: Install helm-docs
-        uses: jaxxstorm/action-install-gh-release@25d5e2dd555cd74f1fab9ac1e6ea117acde2c0c4 # v1.12.0
-        with:
-          repo: norwoodj/helm-docs
-          tag: v1.11.0
-          cache: enable
+        run: curl -fsSL -o /tmp/hd.deb https://github.com/norwoodj/helm-docs/releases/download/v1.14.2/helm-docs_1.14.2_Linux_x86_64.deb && sudo dpkg -i /tmp/hd.deb && rm /tmp/hd.deb
       - name: Replace source repo info
         run: sed -i 's/LABEL\ org\.opencontainers\.image\.source=https:\/\/github\.com\/giantswarm\/demo-album-catalog/LABEL\ org\.opencontainers\.image\.source=https:\/\/github\.com\/giantswarm\/devplatform-template-go-service/' Dockerfile
+      - name: Install pipx
+        run: sudo apt-get install -y --no-install-recommends pipx
+      - name: Install pre-commit
+        run: pipx install pre-commit==${{ env.PRE_COMMIT_VERSION }}
+      - name: Cache pre-commit hooks
+        id: cache-pre-commit-hooks
+        uses: actions/cache@v4
+        env:
+          cache-name: pre-commit-hooks
+        with:
+          path: ~/.cache/pre-commit
+          key: ${{ runner.os }}-pre-commit-${{ env.PRE_COMMIT_VERSION }}-hooks-${{ hashFiles('.pre-commit-config.yaml') }}
+      - if: ${{ steps.cache-pre-commit-hooks.outputs.cache-hit != 'true' }}
+        name: Install pre-commit hooks
+        run: pre-commit install-hooks
       - name: Run pre-commit
         continue-on-error: true
-        uses: pre-commit/action@2c7b3805fd2a0fd8c1884dcaebf91fc102a13ecd # v3.0.1
+        run: |
+          pipx ensurepath
+          pre-commit run --show-diff-on-failure --color=always --all-files
       - name: Commit rendered project
         id: cpr
         uses: peter-evans/create-pull-request@v7
         with:
           branch: "rendered-project-${{ github.head_ref }}"
           delete-branch: true
-          token: ${{ secrets.WORKFLOW_PAT }}
+          token: ${{ steps.generate-token.outputs.token }}
       - name: Create comment when no change
         if: ${{ !steps.cpr.outputs.pull-request-number }}
         uses: peter-evans/create-or-update-comment@v4
