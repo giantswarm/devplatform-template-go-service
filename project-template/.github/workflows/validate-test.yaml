@@ -20,7 +20,7 @@ jobs:
       - name: Install pipx
         run: sudo apt-get install -y --no-install-recommends pipx
       - name: Install pre-commit
-        run: pipx install pre-commit==${{ env.PRE_COMMIT_VERSION }}
+        run: {{`pipx install pre-commit==${{ env.PRE_COMMIT_VERSION }}`}}
       - name: Cache pre-commit hooks
         id: cache-pre-commit-hooks
         uses: actions/cache@v4
@@ -28,8 +28,8 @@ jobs:
           cache-name: pre-commit-hooks
         with:
           path: ~/.cache/pre-commit
-          key: ${{ runner.os }}-pre-commit-${{ env.PRE_COMMIT_VERSION }}-hooks-${{ hashFiles('.pre-commit-config.yaml') }}
-      - if: ${{ steps.cache-pre-commit-hooks.outputs.cache-hit != 'true' }}
+          key: {{`${{ runner.os }}-pre-commit-${{ env.PRE_COMMIT_VERSION }}-hooks-${{ hashFiles('.pre-commit-config.yaml') }}`}}
+      - if: {{`${{ steps.cache-pre-commit-hooks.outputs.cache-hit != 'true' }}`}}
         name: Install pre-commit hooks
         run: pre-commit install-hooks
       - name: Run pre-commit
