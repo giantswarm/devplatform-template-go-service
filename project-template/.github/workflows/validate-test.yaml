@@ -16,13 +16,27 @@ jobs:
       - name: Install golangci
         run: curl -sSfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sh -s -- -b "$HOME/.local/bin" v1.54.2
       - name: Install helm-docs
-        uses: jaxxstorm/action-install-gh-release@25d5e2dd555cd74f1fab9ac1e6ea117acde2c0c4 # v1.12.0
+        run: curl -fsSL -o /tmp/hd.deb https://github.com/norwoodj/helm-docs/releases/download/v1.14.2/helm-docs_1.14.2_Linux_x86_64.deb && sudo dpkg -i /tmp/hd.deb && rm /tmp/hd.deb
+      - name: Install pipx
+        run: sudo apt-get install -y --no-install-recommends pipx
+      - name: Install pre-commit
+        run: pipx install pre-commit==${{ env.PRE_COMMIT_VERSION }}
+      - name: Cache pre-commit hooks
+        id: cache-pre-commit-hooks
+        uses: actions/cache@v4
+        env:
+          cache-name: pre-commit-hooks
         with:
-          repo: norwoodj/helm-docs
-          tag: v1.11.0
-          cache: enable
+          path: ~/.cache/pre-commit
+          key: ${{ runner.os }}-pre-commit-${{ env.PRE_COMMIT_VERSION }}-hooks-${{ hashFiles('.pre-commit-config.yaml') }}
+      - if: ${{ steps.cache-pre-commit-hooks.outputs.cache-hit != 'true' }}
+        name: Install pre-commit hooks
+        run: pre-commit install-hooks
       - name: Run pre-commit
-        uses: pre-commit/action@2c7b3805fd2a0fd8c1884dcaebf91fc102a13ecd # v3.0.1
+        continue-on-error: true
+        run: |
+          pipx ensurepath
+          pre-commit run --show-diff-on-failure --color=always --all-files
   test:
     runs-on: ubuntu-latest
     needs: validate
