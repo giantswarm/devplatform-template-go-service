@@ -28,7 +28,7 @@ jobs:
       - name: Checkout rendered project branch
         uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4
         with:
-          ref: "rendered-project-pack"
+          ref: "rendered-project"
       - name: Run boilerplate
         run: boilerplate --non-interactive --template-url /tmp/project-template --output-folder . --var-file /tmp/boilerplate-values.yml
       - name: Install helm-docs
@@ -59,7 +59,7 @@ jobs:
         id: cpr
         uses: peter-evans/create-pull-request@v7
         with:
-          branch: "rendered-project-pack-${{ github.head_ref }}"
+          branch: "rendered-project-${{ github.head_ref }}"
           delete-branch: true
           token: ${{ steps.generate-token.outputs.token }}
       - name: Create comment when no change
