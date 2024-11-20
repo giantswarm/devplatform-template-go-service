@@ -23,13 +23,13 @@ jobs:
         with:
           app-id: ${{ secrets.IDP_TOOLKIT_APP_ID }}
           private-key: ${{ secrets.IDP_TOOLKIT_APP_KEY }}
-      - uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4
       - name: Install boilerplate
         run: curl -fsSL https://github.com/gruntwork-io/boilerplate/releases/latest/download/boilerplate_linux_amd64 -o /usr/local/bin/boilerplate && chmod +x /usr/local/bin/boilerplate
       - name: Copy the current state for use with templating
         run: cp -a project-template/ boilerplate-values.yml /tmp
       - name: Checkout rendered project branch
-        uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4
         with:
           ref: "rendered-project"
       - name: Run boilerplate
