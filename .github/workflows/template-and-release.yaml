@@ -18,18 +18,18 @@ jobs:
       pull-requests: write
       actions: write
     steps:
-      - uses: actions/create-github-app-token@v1
+      - uses: actions/create-github-app-token@c1a285145b9d317df6ced56c09f525b5c2b6f755 # v1.11.1
         id: generate-token
         with:
           app-id: ${{ secrets.IDP_TOOLKIT_APP_ID }}
           private-key: ${{ secrets.IDP_TOOLKIT_APP_KEY }}
-      - uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
       - name: Install boilerplate
         run: curl -fsSL https://github.com/gruntwork-io/boilerplate/releases/latest/download/boilerplate_linux_amd64 -o /usr/local/bin/boilerplate && chmod +x /usr/local/bin/boilerplate
       - name: Copy the current state for use with templating
         run: cp -a project-template/ boilerplate-values.yml /tmp
       - name: Checkout rendered project branch
-        uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
         with:
           ref: "rendered-project"
       - name: Run boilerplate
@@ -44,7 +44,7 @@ jobs:
         run: pipx install pre-commit==${{ env.PRE_COMMIT_VERSION }}
       - name: Cache pre-commit hooks
         id: cache-pre-commit-hooks
-        uses: actions/cache@v4
+        uses: actions/cache@1bd1e32a3bdc45362d1e726936510720a7c30a57 # v4.2.0
         env:
           cache-name: pre-commit-hooks
         with:
@@ -60,24 +60,25 @@ jobs:
           pre-commit run --show-diff-on-failure --color=always --all-files
       - name: Commit rendered project
         id: cpr
-        uses: peter-evans/create-pull-request@v7
+        uses: peter-evans/create-pull-request@67ccf781d68cd99b580ae25a5c18a1cc84ffff1f # v7.0.6
         with:
           branch: "rendered-project-${{ github.head_ref }}"
           delete-branch: true
           token: ${{ steps.generate-token.outputs.token }}
       - name: Create comment when no change
         if: ${{ !steps.cpr.outputs.pull-request-number }}
-        uses: peter-evans/create-or-update-comment@v4
+        uses: peter-evans/create-or-update-comment@71345be0265236311c031f5c7866368bd1eff043 # v4.0.0
         with:
           issue-number: ${{ github.event.number }}
           body: |
             Your current PR doesn't make any change in the rendered project. No PR was created.
       - name: Create comment when change
         if: ${{ steps.cpr.outputs.pull-request-number }}
-        uses: peter-evans/create-or-update-comment@v4
+        uses: peter-evans/create-or-update-comment@71345be0265236311c031f5c7866368bd1eff043 # v4.0.0
         with:
           issue-number: ${{ github.event.number }}
           body: |
-            A Pull Request was created to preview the result of this PR.
+            A pull request was created to preview the result of this PR.
             Make sure you review and accept the created PR before you merge this one!
-            Pull Request URL - ${{ steps.cpr.outputs.pull-request-url }}
+            
+            URL: ${{ steps.cpr.outputs.pull-request-url }}
