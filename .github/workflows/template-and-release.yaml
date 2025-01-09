@@ -70,6 +70,7 @@ jobs:
         uses: peter-evans/create-or-update-comment@71345be0265236311c031f5c7866368bd1eff043 # v4.0.0
         with:
           issue-number: ${{ github.event.number }}
+          edit-mode: replace
           body: |
             Your current PR doesn't make any change in the rendered project. No PR was created.
       - name: Create comment when change
@@ -77,8 +78,7 @@ jobs:
         uses: peter-evans/create-or-update-comment@71345be0265236311c031f5c7866368bd1eff043 # v4.0.0
         with:
           issue-number: ${{ github.event.number }}
+          edit-mode: replace
           body: |
-            A pull request was created to preview the result of this PR.
-            Make sure you review and accept the created PR before you merge this one!
-            
-            URL: ${{ steps.cpr.outputs.pull-request-url }}
+            Pull request ${{ steps.cpr.outputs.pull-request-url }} was created to preview the result of this PR.
+            Make sure you review and accept the created PR before you merge this one here.
