@@ -10,4 +10,5 @@ spec:
   selector:
     matchLabels:
       {{- include "project.selectorLabels" . | nindent 6 }}
+  unhealthyPodEvictionPolicy: AlwaysAllow
 {{- end }}
