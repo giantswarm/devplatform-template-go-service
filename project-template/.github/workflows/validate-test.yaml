@@ -26,7 +26,7 @@ jobs:
         run: {{`pipx install pre-commit==${{ env.PRE_COMMIT_VERSION }}`}}
       - name: Cache pre-commit hooks
         id: cache-pre-commit-hooks
-        uses: actions/cache@v4
+        uses: actions/cache@1bd1e32a3bdc45362d1e726936510720a7c30a57 # v4.2.0
         env:
           cache-name: pre-commit-hooks
         with:
@@ -52,6 +52,6 @@ jobs:
       - name: Write GoList for Nancy
         run: go list -json -m all > go.list
       - name: Run Nancy
-        uses: sonatype-nexus-community/nancy-github-action@main
+        uses: sonatype-nexus-community/nancy-github-action@aae196481b961d446f4bff9012e4e3b63d7921a4 # v1.0.2
       - name: Test
         run: go test -v ./...
