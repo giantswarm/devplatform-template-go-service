@@ -18,6 +18,6 @@ jobs:
               owner: context.repo.owner,
               repo: context.repo.repo,
             })
-            for (cons c in comments) {
+            for (const c of comments) {
               console.log(c)
             }
