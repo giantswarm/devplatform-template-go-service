@@ -1,0 +1,55 @@
+name: Block PR until Sub-PR is Merged
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, closed]
+  issue_comment:
+    types: [created]
+
+jobs:
+  block-pr:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check for Sub-PR Status
+        id: check_sub_pr
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const isPullRequest = context.payload.pull_request !== undefined;
+            const mainPrNumber = isPullRequest
+              ? context.payload.pull_request.number
+              : context.payload.issue.number;
+
+            const commentPattern = /Pull request https:\/\/github\.com\/.*\/pull\/(\d+) was created to preview the result of this PR./;
+
+            const comments = await github.rest.issues.listComments({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: mainPrNumber,
+            });
+
+            const subPrComment = comments.data.find(comment => commentPattern.test(comment.body));
+            if (!subPrComment) {
+              console.log('No sub-PR comment found.');
+              return;
+            }
+
+            const subPrNumber = subPrComment.body.match(commentPattern)[1];
+            console.log(`Sub-PR Number: ${subPrNumber}`);
+
+            const subPr = await github.rest.pulls.get({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              pull_number: subPrNumber,
+            });
+
+            if (subPr.data.merged) {
+              console.log(`Sub-PR #${subPrNumber} is merged.`);
+            } else {
+              throw new Error(`Sub-PR #${subPrNumber} is not merged.`);
+            }
+      - name: Fail if Sub-PR is not merged
+        if: ${{ failure() }}
+        run: |
+          echo "The sub-PR is not merged. Blocking the main PR."
+          exit 1
