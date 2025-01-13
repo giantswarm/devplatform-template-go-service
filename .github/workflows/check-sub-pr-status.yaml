@@ -2,7 +2,7 @@ name: Block PR until Sub-PR is Merged
 
 on:
   pull_request:
-    types: [opened, synchronize, reopened]
+    types: [opened, synchronize, reopened, closed]
   issue_comment:
     types: [created]
 
@@ -10,11 +10,6 @@ jobs:
   block-pr:
     runs-on: ubuntu-latest
     steps:
-      - name: Debug Context
-        uses: actions/github-script@v7
-        with:
-          script: |
-            console.log(JSON.stringify(context.payload, null, 2));
       - name: Check for Sub-PR Status
         id: check_sub_pr
         uses: actions/github-script@v7
