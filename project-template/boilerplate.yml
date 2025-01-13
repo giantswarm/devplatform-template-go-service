@@ -60,3 +60,8 @@ hooks:
         - -a
         - templates/
         - "{{ outputFolder }}/"
+    - command: sed
+      args:
+        - -i
+        - s/module github\.com\/giantswarm\/devplatform-template-go-service/module github\.com\/{{.RepoOwner}}\/{{.ProjectName}}/
+        - go.mod
