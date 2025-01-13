@@ -33,7 +33,7 @@ jobs:
               issue_number: mainPrNumber,
             });
 
-            for (c of comments) {
+            for (c of comments.data) {
               console.log(c);
             }
 
