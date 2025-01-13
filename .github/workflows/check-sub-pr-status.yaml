@@ -14,10 +14,15 @@ jobs:
     steps:
       - name: Check for Sub-PR Status
         id: check_sub_pr
-        uses: actions/github-script@v6
+        uses: actions/github-script@v7
         with:
           script: |
+            if (!context.payload.pull_request) {
+              throw new Error("No pull request found in the context payload.");
+            }
+
             const mainPrNumber = context.payload.pull_request.number;
+            console.log(`Main PR Number: ${mainPrNumber}`);
             const commentPattern = /Pull request #(\d+) was created to preview the result of this PR\.\nMake sure you review and accept the created PR before you merge this one here\./;
 
             const comments = await github.issues.listComments({
