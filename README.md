@@ -1,4 +1,4 @@
-# devplatform-template-go-service work as expected
+# devplatform-template-go-service
 
 This project is a template project to bootstrap golang repositories using the Giant IDP.
 Please read the notes below to understand how this repository works and is kept up to date.
