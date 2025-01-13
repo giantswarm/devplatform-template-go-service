@@ -1,4 +1,4 @@
-module github.com/{{.RepoOwner}}/{{.ProjectName}}
+module github.com/giantswarm/devplatform-template-go-service
 
 go 1.22.2
 
