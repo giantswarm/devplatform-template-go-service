@@ -31,7 +31,7 @@ jobs:
             const subPrComment = comments.data.find(comment => commentPattern.test(comment.body));
             if (!subPrComment) {
               console.log('No sub-PR comment found.');
-              exit 1;
+              throw new Error(`Sub-PR comment not found in the current PR.`);
             }
 
             const subPrNumber = subPrComment.body.match(commentPattern)[1];
