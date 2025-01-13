@@ -14,6 +14,10 @@ PR will be also blocked with status checks until the sub-PR is merged.
 Once you're happy with the change in the sub-PR, you should merge it (the changes will go to `rendered-project`
 branch). Once that's done, you can merge the original PR as well.
 
+> [!WARNING]
+> Currently, the status of the sub-PR is not automatically refelcted in the main PR. After you merge the sub-PR, you have to
+> manually trigger a re-run of the "check if sub-PR is merged" check.
+
 ### Renovate
 
 Renovate correctly detects dependencies and creates PR against the `main` branch.
