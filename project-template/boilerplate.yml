@@ -63,4 +63,5 @@ hooks:
     - command: sed
       args:
         - -i
-        - /module github\.com\/giantswarm\/devplatform-template-go-service/module github\.com\/{{.RepoOwner}}\/{{.ProjectName}}/
+        - s/module github\.com\/giantswarm\/devplatform-template-go-service/module github\.com\/{{.RepoOwner}}\/{{.ProjectName}}/
+        - go.mod
