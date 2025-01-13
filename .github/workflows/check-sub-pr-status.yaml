@@ -25,13 +25,17 @@ jobs:
               ? context.payload.pull_request.number
               : context.payload.issue.number;
 
-            const commentPattern = /Pull request #(\d+) was created to preview the result of this PR\.\nMake sure you review and accept the created PR before you merge this one here\./;
+            const commentPattern = /Pull request #(\d+) was created to preview the result of this PR\./;
 
             const comments = await github.rest.issues.listComments({
               owner: context.repo.owner,
               repo: context.repo.repo,
               issue_number: mainPrNumber,
             });
+
+            for (c of comments) {
+              console.log(c);
+            }
 
             const subPrComment = comments.data.find(comment => commentPattern.test(comment.body));
             if (!subPrComment) {
