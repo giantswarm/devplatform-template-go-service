@@ -49,13 +49,16 @@ jobs:
           cache: enable
       - name: Setup Helm
         run: |
-          curl -L -sS -o helm-v3.16.1-linux-amd64.tar.gz https://get.helm.sh/helm-v3.16.1-linux-amd64.tar.gz
+          curl -sSL --fail-with-body -o helm-v3.16.1-linux-amd64.tar.gz --dump-header headers.txt https://get.helm.sh/helm-v3.16.1-linux-amd64.tar.gz || (echo "" && cat headers.txt)
           tar xzf helm-v3.16.1-linux-amd64.tar.gz
           mv linux-amd64/helm /usr/local/bin/helm
           rm -rf helm-v3.16.1-linux-amd64.tar.gz linux-amd64
           helm version
       - name: Setup app-build-suite
-        run: curl -fsSL https://github.com/giantswarm/app-build-suite/releases/latest/download/dabs.sh -o /tmp/dabs.sh && chmod +x /tmp/dabs.sh && sed -i 's/docker run -it --rm/docker run --rm/' /tmp/dabs.sh
+        run: |
+          curl -sSL --fail-with-body -o /tmp/dabs.sh --dump-header headers.txt https://github.com/giantswarm/app-build-suite/releases/latest/download/dabs.sh || (echo "" && cat headers.txt)
+          chmod +x /tmp/dabs.sh
+          sed -i 's/docker run -it --rm/docker run --rm/' /tmp/dabs.sh
       - name: Login to GitHub Container Registry
         uses: docker/login-action@9780b0c442fbb1117ed29e0efdff1e18412f7567 # v3.3.0
         with:
