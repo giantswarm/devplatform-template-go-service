@@ -16,10 +16,13 @@ jobs:
         uses: actions/setup-python@42375524e23c412d93fb67b49958b491fce71c38 # v5
         with:
           python-version: 3.12
-      - name: Install golangci
-        run: curl -sSfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sh -s -- -b "$HOME/.local/bin" v1.54.2
+      - name: Install golangci-lint
+        run: curl -sSL --fail-with-body https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sh -s -- -b "$HOME/.local/bin" v1.54.2
       - name: Install helm-docs
-        run: curl -fsSL -o /tmp/hd.deb https://github.com/norwoodj/helm-docs/releases/download/v1.14.2/helm-docs_1.14.2_Linux_x86_64.deb && sudo dpkg -i /tmp/hd.deb && rm /tmp/hd.deb
+        run: |
+          curl -sSL --fail-with-body -o /tmp/hd.deb --dump-header headers.txt https://github.com/norwoodj/helm-docs/releases/download/v1.14.2/helm-docs_1.14.2_Linux_x86_64.deb || (echo "" && cat headers.txt)
+          sudo dpkg -i /tmp/hd.deb
+          rm /tmp/hd.deb
       - name: Install pipx
         run: sudo apt-get install -y --no-install-recommends pipx
       - name: Install pre-commit
