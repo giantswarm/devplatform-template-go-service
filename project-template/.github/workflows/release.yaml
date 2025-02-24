@@ -41,7 +41,7 @@ jobs:
       - name: Setup pack
         uses: buildpacks/github-actions/setup-pack@b048033711c252f669f99c81a75d41df6ef23fe7 # v5.8.8
       - name: Setup Cosign
-        uses: sigstore/cosign-installer@c56c2d3e59e4281cc41dea2217323ba5694b171e # v3.8.0
+        uses: sigstore/cosign-installer@d7d6bc7722e3daa8354c50bcb52f4837da5e9b6a # v3.8.1
       - name: Install oras
         uses: jaxxstorm/action-install-gh-release@cd6b2b78ad38bdd294341cda064ec0692b06215b # v1.14.0
         with:
