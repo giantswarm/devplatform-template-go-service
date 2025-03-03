@@ -1,11 +1,11 @@
 apiVersion: v2
-name: {{.ProjectName}}
+name: "{{.ProjectName}}"
 description: A Helm chart to deploy the sample golang based web service project.
 type: application
 kubeVersion: ">=1.25.0"
 home: https://github.com/{{.RepoOwner}}/{{.ImageName}}/
 maintainers:
-  - name: {{.RepoOwner}}
+  - name: "{{.RepoOwner}}"
     email: noemail@nothing.com
 icon: https://s.giantswarm.io/app-icons/giantswarm/1/dark.svg
 
