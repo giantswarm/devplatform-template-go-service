@@ -36,6 +36,7 @@ Use the values below to configure the chart's values.
 | ingress.enabled | bool | `true` | Should the Service be accessible through an Ingress. This needs an Ingress controller to be configured already on your cluster. |
 | ingress.host | string | `"chart-example.local"` | HTTP host that you want to use for your service. |
 | ingress.tls | list | `[]` | Optional TLS certificate configuration. You can use it with "CertManager" or provide your own certificate. |
+| monitoring.podLogs | object | `{"enabled":true}` | If your cluster supports logs collection by creating PodLogs objects enable this to have logs automatically collected. |
 | monitoring.serviceMonitor | object | `{"enabled":true,"extraLabels":{}}` | If your cluster supports prometheus-operator configuration of metrics data, enable this to have metrics from your application automatically ingested by prometheus. |
 | monitoring.serviceMonitor.extraLabels | object | `{}` | Optional extra labels to put on the serviceMonitor |
 | nameOverride | string | `""` | Override the default name generated for the chart objects. |
