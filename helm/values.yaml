@@ -148,3 +148,7 @@ monitoring:
     # @schema
     # -- Optional extra labels to put on the serviceMonitor
     extraLabels: {}
+  # -- If your cluster supports logs collection by creating PodLogs objects
+  # enable this to have logs automatically collected.
+  podLogs:
+    enabled: true
