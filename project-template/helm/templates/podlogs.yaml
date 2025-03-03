@@ -15,5 +15,5 @@ spec:
     targetLabel: giantswarm_observability_tenant
   selector:
     matchLabels:
-      {{- include "project.selectorLabels" . | nindent 4 }}
+      {{- include "project.selectorLabels" . | nindent 6 }}
 {{- end -}}

@@ -14,7 +14,7 @@ icon: https://s.giantswarm.io/app-icons/giantswarm/1/dark.svg
 # Versions are expected to follow Semantic Versioning (https://semver.org/)
 # When built with https://github.com/giantswarm/app-build-suite,
 # the version might be automatically set based on git tags discovery.
-version: 0.2.0
+version: 0.1.0
 
 # This is the version number of the application being deployed. This version number should be
 # incremented each time you make changes to the application. Versions are not expected to
