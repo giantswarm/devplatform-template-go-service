@@ -1,7 +1,5 @@
 # {{.ProjectName}}
 
-![validation and test result](https://github.com/{{.RepoOwner}}/{{.ProjectName}}/actions/workflows/validate-test.yaml/badge.svg?event=push)
-
 ## Intro
 
 This repo is meant as a template base for golang based web service projects, that are deployed to a Kubernetes cluster
