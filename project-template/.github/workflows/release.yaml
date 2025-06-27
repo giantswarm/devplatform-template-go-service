@@ -39,20 +39,20 @@ jobs:
         run: |
           echo "CURRENT_TAG=$CURRENT_TAG"
       - name: Setup pack
-        uses: buildpacks/github-actions/setup-pack@d82294e03fd6b8e8484cde2ee166788876e366e3 # v5.8.10
+        uses: buildpacks/github-actions/setup-pack@18140f827a09dd7fad8a189e7fdd97460811cd53 # v5.9.1
       - name: Setup Cosign
-        uses: sigstore/cosign-installer@d7d6bc7722e3daa8354c50bcb52f4837da5e9b6a # v3.8.1
+        uses: sigstore/cosign-installer@398d4b0eeef1380460a10c8013a76f728fb906ac # v3.9.1
       - name: Install oras
-        uses: jaxxstorm/action-install-gh-release@cd6b2b78ad38bdd294341cda064ec0692b06215b # v1.14.0
+        uses: jaxxstorm/action-install-gh-release@6096f2a2bbfee498ced520b6922ac2c06e990ed2 # v2.1.0
         with:
           repo: oras-project/oras
           cache: enable
       - name: Setup Helm
         run: |
-          curl -sSL --fail-with-body -o helm-v3.16.1-linux-amd64.tar.gz --dump-header headers.txt https://get.helm.sh/helm-v3.16.1-linux-amd64.tar.gz || (echo "" && cat headers.txt)
-          tar xzf helm-v3.16.1-linux-amd64.tar.gz
+          curl -sSL --fail-with-body -o helm.tar.gz --dump-header headers.txt https://get.helm.sh/helm-v3.18.3-linux-amd64.tar.gz || (echo "" && cat headers.txt)
+          tar xzf helm.tar.gz
           mv linux-amd64/helm /usr/local/bin/helm
-          rm -rf helm-v3.16.1-linux-amd64.tar.gz linux-amd64
+          rm -rf helm.tar.gz linux-amd64
           helm version
       - name: Setup app-build-suite
         run: |
