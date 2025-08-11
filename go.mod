@@ -2,7 +2,7 @@ module github.com/giantswarm/devplatform-template-go-service
 
 go 1.23.0
 
-toolchain go1.24.4
+toolchain go1.24.6
 
 require (
 	github.com/chenyahui/gin-cache v1.10.0
