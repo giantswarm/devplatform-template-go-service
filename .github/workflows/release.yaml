@@ -39,7 +39,7 @@ jobs:
         run: |
           echo "CURRENT_TAG=$CURRENT_TAG"
       - name: Setup pack
-        uses: buildpacks/github-actions/setup-pack@bc04fbfd78e903050bab17a2dcf907e71e3c4afa # v5.9.2
+        uses: buildpacks/github-actions/setup-pack@8203df0b7ac31e358daa391b1949da5650e7f4f0 # v5.9.3
       - name: Setup Cosign
         uses: sigstore/cosign-installer@d58896d6a1865668819e1d91763c7751a165e159 # v3.9.2
       - name: Install oras
