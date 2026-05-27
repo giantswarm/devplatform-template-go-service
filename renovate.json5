@@ -2,7 +2,8 @@
   // This configuration extends the following presets. See
   // https://docs.renovatebot.com/key-concepts/presets/ for more details.
   "extends": [
-    "config:recommended",
+    "github>giantswarm/renovate-presets:default.json5",
+    "github>giantswarm/renovate-presets:lang-go.json5",
   ],
 
   // Labels to add to all PRs
